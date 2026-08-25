@@ -1,0 +1,1823 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Duran'sPhones · Dispositivos revisados en San Salvador</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<!--
+==========================================================================
+  ZONA QUE TÚ EDITAS  ·  todo lo que necesitas cambiar está aquí abajo
+==========================================================================
+-->
+<script>
+
+// 1) TU NÚMERO DE WHATSAPP
+//    Código de país + número, sin +, sin espacios, sin guiones.
+const WHATSAPP = "50377564563";
+
+// 2) EL NOMBRE DE TU TIENDA
+const TIENDA = "Duran'sPhones";
+
+// 3) DÓNDE ESTÁS
+const CIUDAD = "San Salvador";
+const ZONA   = "Antiguo Cuscatlán";
+
+// 4) CLAVE DEL PANEL DE ADMINISTRACIÓN
+//    Para abrirlo: agrega #admin al final de la dirección y pon esta clave.
+//    OJO: esto solo esconde el panel, NO es seguridad de verdad.
+//    Cualquiera que abra el código fuente de la página puede leer esta clave.
+const ADMIN_CLAVE = "cambiaesto";
+
+// 5) TUS DISPOSITIVOS
+//    Copia un bloque completo { ... }, pégalo y cámbiale los datos.
+//    O usa el panel de administración, que te genera el bloque ya escrito.
+//
+//    grado:    "A" casi nuevo · "B" detalles menores · "C" con marcas de uso
+//    bateria:  porcentaje de salud. Pon null si no aplica.
+//    estado:   "disponible" o "vendido"
+//    foto:     enlace a la imagen. Déjalo en "" y sale un recuadro con el nombre.
+
+const DISPOSITIVOS = [
+  {
+    nombre: "iPhone 1",
+    detalle: "128 GB · Medianoche",
+    categoria: "Teléfonos",
+    precio: 385,
+    grado: "A",
+    bateria: 91,
+    incluye: "Caja y cable",
+    garantia: "30 días",
+    nota: "Libre de fábrica. Sin rayones en pantalla.",
+    foto: "",
+    estado: "disponible"
+  },
+  {
+    nombre: "Samsung Galaxy S22",
+    detalle: "256 GB · Verde",
+    categoria: "Teléfonos",
+    precio: 310,
+    grado: "B",
+    bateria: 87,
+    incluye: "Solo equipo",
+    garantia: "30 días",
+    nota: "Micro rayón en la esquina inferior derecha.",
+    foto: "",
+    estado: "disponible"
+  },
+  {
+    nombre: "MacBook Air M1",
+    detalle: "8 GB RAM · 256 GB SSD",
+    categoria: "Laptops",
+    precio: 640,
+    grado: "A",
+    bateria: 94,
+    incluye: "Cargador original",
+    garantia: "60 días",
+    nota: "212 ciclos de carga.",
+    foto: "",
+    estado: "disponible"
+  },
+  {
+    nombre: "iPad 9na gen",
+    detalle: "64 GB · WiFi",
+    categoria: "Tablets",
+    precio: 215,
+    grado: "B",
+    bateria: 89,
+    incluye: "Cable y cubo",
+    garantia: "30 días",
+    nota: "Funda incluida sin costo.",
+    foto: "",
+    estado: "disponible"
+  },
+  {
+    nombre: "AirPods Pro 2",
+    detalle: "Con estuche MagSafe",
+    categoria: "Accesorios",
+    precio: 145,
+    grado: "A",
+    bateria: null,
+    incluye: "Caja completa",
+    garantia: "15 días",
+    nota: "Almohadillas nuevas.",
+    foto: "",
+    estado: "disponible"
+  },
+  {
+    nombre: "Xiaomi Redmi Note 12",
+    detalle: "128 GB · Azul",
+    categoria: "Teléfonos",
+    precio: 155,
+    grado: "C",
+    bateria: 82,
+    incluye: "Solo equipo",
+    garantia: "15 días",
+    nota: "Marcas de uso en la tapa. Pantalla impecable.",
+    foto: "",
+    estado: "vendido"
+  }
+];
+
+// 6) CONDICIONES DEL ENCARGO
+const ENCARGO = {
+  respuesta: "24 horas",
+  anticipo:  "30%",
+  entrega:   "5 a 10 días"
+};
+
+</script>
+<!--
+==========================================================================
+  FIN DE LA ZONA QUE TÚ EDITAS
+==========================================================================
+-->
+
+<style>
+  :root{
+    --abismo:      #070C10;
+    --carbon:      #0F171D;
+    --carbon-alto: #16222A;
+    --linea:       #1F303A;
+    --linea-viva:  #2C4351;
+
+    --claro:       #E4EEF3;
+    --niebla:      #8FA5B2;
+    --niebla-baja: #5F7583;
+
+    --oro:         #F0B429;
+    --oro-tenue:   rgba(240,180,41,.14);
+    --cian:        #45D6C6;
+    --ambar:       #F08B3F;
+    --rojo:        #E45C50;
+
+    --display: "Space Grotesk", system-ui, sans-serif;
+    --texto:   "IBM Plex Sans", system-ui, sans-serif;
+    --dato:    "IBM Plex Mono", ui-monospace, monospace;
+
+    --curva: cubic-bezier(.22,.68,.34,1);
+  }
+
+  *{ box-sizing: border-box; }
+  html{ scroll-behavior: smooth; }
+
+  body{
+    margin: 0;
+    background: var(--abismo);
+    color: var(--claro);
+    font-family: var(--texto);
+    font-size: 16px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+
+  .envoltura{
+    width: min(1180px, 100% - 2.5rem);
+    margin-inline: auto;
+  }
+
+  a:focus-visible, button:focus-visible, input:focus-visible,
+  select:focus-visible, textarea:focus-visible{
+    outline: 2px solid var(--oro);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+
+  /* ================= Botones ================= */
+
+  .boton{
+    position: relative;
+    font-family: var(--texto);
+    font-weight: 600;
+    font-size: .92rem;
+    padding: .68rem 1.25rem;
+    border: 1px solid var(--oro);
+    border-radius: 6px;
+    background: var(--oro);
+    color: #12181C;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: .5rem;
+    cursor: pointer;
+    overflow: hidden;
+    transition: box-shadow .3s var(--curva), transform .18s var(--curva);
+  }
+  .boton::after{
+    content: "";
+    position: absolute;
+    top: 0; bottom: 0; left: -60%;
+    width: 45%;
+    background: linear-gradient(100deg, transparent, rgba(255,255,255,.55), transparent);
+    transform: skewX(-18deg);
+    transition: left .55s var(--curva);
+  }
+  .boton:hover{
+    box-shadow: 0 0 0 1px var(--oro), 0 8px 26px -8px rgba(240,180,41,.65);
+    transform: translateY(-2px);
+  }
+  .boton:hover::after{ left: 115%; }
+  .boton:active{ transform: translateY(0); }
+
+  .boton.fantasma{
+    background: transparent;
+    color: var(--oro);
+    border-color: var(--linea-viva);
+  }
+  .boton.fantasma:hover{
+    border-color: var(--oro);
+    background: var(--oro-tenue);
+    box-shadow: none;
+  }
+
+  /* ================= Cabecera ================= */
+
+  .cabecera{
+    position: sticky;
+    top: 0;
+    z-index: 60;
+    background: rgba(7,12,16,.72);
+    backdrop-filter: blur(14px) saturate(150%);
+    -webkit-backdrop-filter: blur(14px) saturate(150%);
+    border-bottom: 1px solid transparent;
+    transition: border-color .35s ease, background .35s ease;
+  }
+  .cabecera.pegada{
+    border-bottom-color: var(--linea);
+    background: rgba(7,12,16,.92);
+  }
+
+  .cabecera-fila{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding-block: .95rem;
+  }
+
+  .marca{
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: 1.32rem;
+    letter-spacing: -.025em;
+    display: flex;
+    align-items: center;
+    gap: .6rem;
+  }
+
+  .acciones-cabecera{
+    display: flex;
+    align-items: center;
+    gap: 1.15rem;
+  }
+
+  .enlace-menu{
+    font-family: var(--dato);
+    font-size: .78rem;
+    letter-spacing: .04em;
+    color: var(--niebla);
+    text-decoration: none;
+    transition: color .25s var(--curva);
+    white-space: nowrap;
+  }
+  .enlace-menu:hover{ color: var(--oro); }
+
+  .led{
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    background: var(--oro);
+    box-shadow: 0 0 12px 2px rgba(240,180,41,.75);
+    animation: latido 3.4s ease-in-out infinite;
+    flex: none;
+  }
+  @keyframes latido{
+    0%,100%{ opacity: 1;   box-shadow: 0 0 12px 2px rgba(240,180,41,.75); }
+    50%    { opacity: .55; box-shadow: 0 0 6px 1px rgba(240,180,41,.35); }
+  }
+
+  /* ================= Portada ================= */
+
+  .portada{
+    position: relative;
+    padding-block: clamp(3.5rem, 9vw, 7rem) clamp(2.5rem, 5vw, 4rem);
+    overflow: hidden;
+  }
+
+  .aurora{
+    position: absolute;
+    top: -30%; left: 50%;
+    width: min(1100px, 130vw);
+    aspect-ratio: 1;
+    transform: translateX(-50%);
+    background:
+      radial-gradient(circle at 38% 42%, rgba(240,180,41,.16), transparent 58%),
+      radial-gradient(circle at 66% 55%, rgba(69,214,198,.13), transparent 60%);
+    filter: blur(20px);
+    pointer-events: none;
+    animation: respirar 13s ease-in-out infinite;
+  }
+  @keyframes respirar{
+    0%,100%{ opacity: .85; transform: translateX(-50%) scale(1); }
+    50%    { opacity: 1;   transform: translateX(-50%) scale(1.09); }
+  }
+
+  .portada .envoltura{ position: relative; z-index: 1; }
+
+  .etiqueta{
+    font-family: var(--dato);
+    font-size: .72rem;
+    font-weight: 600;
+    letter-spacing: .18em;
+    text-transform: uppercase;
+    color: var(--oro);
+    display: inline-flex;
+    align-items: center;
+    gap: .6rem;
+    margin-bottom: 1.4rem;
+  }
+  .etiqueta::before{
+    content: "";
+    width: 34px; height: 1px;
+    background: var(--oro);
+  }
+
+  .portada h1{
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: clamp(2.3rem, 7vw, 4.6rem);
+    line-height: 1.02;
+    letter-spacing: -.04em;
+    margin: 0 0 1.3rem;
+    max-width: 16ch;
+  }
+  .portada h1 em{
+    font-style: normal;
+    background: linear-gradient(96deg, var(--oro) 12%, var(--cian) 92%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .portada p{
+    margin: 0;
+    max-width: 54ch;
+    font-size: clamp(1rem, 2vw, 1.16rem);
+    color: var(--niebla);
+  }
+
+  .promesas{
+    margin-top: 3rem;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--linea);
+    border: 1px solid var(--linea);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  .promesa{
+    background: var(--carbon);
+    padding: 1.35rem 1.3rem;
+    transition: background .35s var(--curva);
+  }
+  .promesa:hover{ background: var(--carbon-alto); }
+
+  .promesa-clave{
+    font-family: var(--dato);
+    font-size: .68rem;
+    font-weight: 600;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--cian);
+    display: block;
+    margin-bottom: .45rem;
+  }
+  .promesa-valor{
+    font-family: var(--display);
+    font-weight: 500;
+    font-size: clamp(.96rem, 1.6vw, 1.08rem);
+    line-height: 1.3;
+  }
+
+  /* ================= Filtros ================= */
+
+  .filtros{
+    position: sticky;
+    top: 60px;
+    z-index: 50;
+    background: rgba(7,12,16,.88);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-top: 1px solid var(--linea);
+    border-bottom: 1px solid var(--linea);
+    padding-block: .85rem;
+  }
+  .filtros-fila{
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: .5rem;
+  }
+
+  .chip{
+    font-family: var(--dato);
+    font-size: .78rem;
+    font-weight: 500;
+    padding: .45rem .95rem;
+    border: 1px solid var(--linea-viva);
+    border-radius: 999px;
+    background: transparent;
+    color: var(--niebla);
+    cursor: pointer;
+    transition: color .25s var(--curva), border-color .25s var(--curva),
+                background .25s var(--curva), box-shadow .25s var(--curva);
+  }
+  .chip:hover{ color: var(--claro); border-color: var(--niebla-baja); }
+  .chip[aria-pressed="true"]{
+    background: var(--oro-tenue);
+    border-color: var(--oro);
+    color: var(--oro);
+    box-shadow: 0 0 18px -6px rgba(240,180,41,.6);
+  }
+
+  .buscador{
+    margin-left: auto;
+    font-family: var(--texto);
+    font-size: .9rem;
+    padding: .5rem .9rem;
+    border: 1px solid var(--linea-viva);
+    border-radius: 999px;
+    background: var(--carbon);
+    color: var(--claro);
+    min-width: 215px;
+    transition: border-color .25s var(--curva), box-shadow .25s var(--curva);
+  }
+  .buscador::placeholder{ color: var(--niebla-baja); }
+  .buscador:focus{
+    border-color: var(--oro);
+    box-shadow: 0 0 20px -8px rgba(240,180,41,.7);
+  }
+
+  /* ================= Rejilla ================= */
+
+  .conteo{
+    font-family: var(--dato);
+    font-size: .76rem;
+    color: var(--niebla-baja);
+    letter-spacing: .05em;
+    padding-block: 1.6rem 1rem;
+  }
+
+  .rejilla{
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(262px, 1fr));
+    gap: 1.35rem;
+    padding-bottom: 4rem;
+  }
+
+  .ficha{
+    position: relative;
+    background: var(--carbon);
+    border: 1px solid var(--linea);
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    transition: transform .4s var(--curva), border-color .4s var(--curva),
+                box-shadow .4s var(--curva);
+    opacity: 0;
+    transform: translateY(26px);
+    animation: emerger .62s var(--curva) forwards;
+    animation-delay: calc(var(--i, 0) * 65ms);
+  }
+  @keyframes emerger{
+    to{ opacity: 1; transform: translateY(0); }
+  }
+
+  .ficha:hover{
+    transform: translateY(-6px);
+    border-color: var(--linea-viva);
+    box-shadow: 0 22px 48px -22px rgba(0,0,0,.9),
+                0 0 0 1px rgba(240,180,41,.22);
+  }
+
+  .ficha.vendida{ opacity: .48; }
+  .ficha.vendida:hover{ transform: none; box-shadow: none; }
+
+  .lienzo{
+    aspect-ratio: 4 / 3;
+    background: radial-gradient(circle at 50% 38%, #1D2C36, #0C1318 72%);
+    border-bottom: 1px solid var(--linea);
+    display: grid;
+    place-items: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .lienzo img{
+    width: 100%; height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform .65s var(--curva);
+  }
+  .ficha:hover .lienzo img{ transform: scale(1.06); }
+
+  .sin-foto{
+    font-family: var(--display);
+    font-weight: 600;
+    font-size: 1.12rem;
+    color: #3F5764;
+    text-align: center;
+    padding: 1rem;
+    line-height: 1.25;
+  }
+
+  .sello, .grado{
+    position: absolute;
+    font-family: var(--dato);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+  }
+  .sello{
+    top: .7rem; left: .7rem;
+    font-size: .66rem;
+    font-weight: 600;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    padding: .28rem .6rem;
+    background: rgba(228,92,80,.9);
+    color: #fff;
+    border-radius: 4px;
+  }
+  .grado{
+    top: .7rem; right: .7rem;
+    width: 30px; height: 30px;
+    display: grid;
+    place-items: center;
+    font-size: .92rem;
+    font-weight: 600;
+    background: rgba(7,12,16,.72);
+    border: 1px solid var(--linea-viva);
+    color: var(--oro);
+    border-radius: 6px;
+  }
+
+  .cuerpo{ padding: 1.05rem 1.1rem 0; flex: 1; }
+
+  .nombre{
+    font-family: var(--display);
+    font-weight: 600;
+    font-size: 1.1rem;
+    letter-spacing: -.02em;
+    margin: 0;
+  }
+  .detalle{
+    font-family: var(--dato);
+    font-size: .74rem;
+    color: var(--niebla-baja);
+    margin: .2rem 0 .85rem;
+  }
+
+  .precio{
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: 1.85rem;
+    letter-spacing: -.035em;
+    line-height: 1;
+    color: var(--oro);
+    margin: 0;
+  }
+  .precio span{
+    font-size: .82rem;
+    color: var(--niebla-baja);
+    font-weight: 500;
+    letter-spacing: 0;
+  }
+
+  .condicion{
+    margin: 1rem 0 0;
+    border-top: 1px solid var(--linea);
+    font-family: var(--dato);
+    font-size: .74rem;
+  }
+  .renglon{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: .6rem;
+    padding: .46rem 0;
+    border-bottom: 1px solid rgba(31,48,58,.55);
+  }
+  .renglon:last-child{ border-bottom: 0; }
+  .renglon dt{
+    margin: 0;
+    color: var(--niebla-baja);
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    font-size: .66rem;
+  }
+  .renglon dd{
+    margin: 0;
+    font-weight: 500;
+    color: var(--claro);
+    text-align: right;
+  }
+
+  .medidor{ display: flex; align-items: center; gap: .5rem; }
+  .barra{
+    width: 48px; height: 6px;
+    background: var(--linea);
+    border-radius: 999px;
+    overflow: hidden;
+    flex: none;
+  }
+  .barra i{
+    display: block;
+    height: 100%;
+    width: 0;
+    background: var(--cian);
+    border-radius: 999px;
+    transition: width 1.05s var(--curva);
+  }
+  .barra i.media{ background: var(--ambar); }
+  .barra i.baja{  background: var(--rojo); }
+
+  .nota{
+    font-family: var(--texto);
+    font-size: .82rem;
+    color: var(--niebla);
+    padding-top: .8rem;
+    line-height: 1.5;
+    margin: 0;
+  }
+
+  .pie-ficha{ padding: 1rem 1.1rem 1.15rem; }
+  .boton-ficha{ width: 100%; font-size: .87rem; }
+  .boton-ficha.apagado{
+    background: transparent;
+    color: var(--niebla-baja);
+    border-color: var(--linea);
+    cursor: default;
+    pointer-events: none;
+  }
+
+  .vacio{
+    grid-column: 1 / -1;
+    background: var(--carbon);
+    border: 1px dashed var(--linea-viva);
+    border-radius: 12px;
+    padding: 3.25rem 1.5rem;
+    text-align: center;
+  }
+  .vacio p{ margin: 0 0 1.2rem; color: var(--niebla); }
+
+  /* ================= Encargos ================= */
+
+  .encargos{
+    border-top: 1px solid var(--linea);
+    background:
+      radial-gradient(ellipse 70% 60% at 82% 0%, rgba(69,214,198,.09), transparent 70%),
+      var(--carbon);
+    padding-block: clamp(3rem, 6vw, 4.75rem);
+  }
+
+  .encargos-caja{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: clamp(2rem, 5vw, 3.75rem);
+    align-items: start;
+  }
+
+  .encargos h2{
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: clamp(1.7rem, 4vw, 2.6rem);
+    letter-spacing: -.035em;
+    line-height: 1.08;
+    margin: .6rem 0 1rem;
+  }
+  .encargos-texto{
+    color: var(--niebla);
+    margin: 0 0 1.9rem;
+    max-width: 46ch;
+  }
+
+  .reglas{
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    border-top: 1px solid var(--linea);
+  }
+  .regla{
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: .85rem 0;
+    border-bottom: 1px solid var(--linea);
+    font-family: var(--dato);
+    font-size: .8rem;
+  }
+  .regla span:first-child{
+    color: var(--niebla-baja);
+    text-transform: uppercase;
+    letter-spacing: .07em;
+    font-size: .68rem;
+  }
+  .regla span:last-child{ color: var(--cian); font-weight: 500; }
+
+  .formulario{
+    background: var(--abismo);
+    border: 1px solid var(--linea-viva);
+    border-radius: 14px;
+    padding: clamp(1.4rem, 3vw, 2rem);
+    box-shadow: 0 26px 60px -30px rgba(0,0,0,.95);
+  }
+
+  .formulario h3{
+    font-family: var(--display);
+    font-weight: 600;
+    font-size: 1.16rem;
+    letter-spacing: -.02em;
+    margin: 0 0 .35rem;
+  }
+  .formulario > p{
+    margin: 0 0 1.6rem;
+    font-size: .87rem;
+    color: var(--niebla-baja);
+  }
+
+  .campo{ margin-bottom: 1.25rem; }
+  .campo label{
+    display: block;
+    font-family: var(--dato);
+    font-size: .68rem;
+    font-weight: 600;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--niebla-baja);
+    margin-bottom: .5rem;
+  }
+
+  .campo input[type="text"],
+  .campo input[type="number"],
+  .campo input[type="password"],
+  .campo select,
+  .campo textarea{
+    width: 100%;
+    font-family: var(--texto);
+    font-size: .93rem;
+    padding: .68rem .85rem;
+    border: 1px solid var(--linea-viva);
+    border-radius: 7px;
+    background: var(--carbon);
+    color: var(--claro);
+    transition: border-color .25s var(--curva), box-shadow .25s var(--curva);
+  }
+  .campo input::placeholder, .campo textarea::placeholder{ color: var(--niebla-baja); }
+  .campo input:focus, .campo select:focus, .campo textarea:focus{
+    border-color: var(--oro);
+    box-shadow: 0 0 22px -10px rgba(240,180,41,.8);
+  }
+  .campo select{
+    appearance: none;
+    background-image: linear-gradient(45deg, transparent 50%, var(--niebla) 50%),
+                      linear-gradient(135deg, var(--niebla) 50%, transparent 50%);
+    background-position: calc(100% - 18px) 51%, calc(100% - 13px) 51%;
+    background-size: 5px 5px, 5px 5px;
+    background-repeat: no-repeat;
+    padding-right: 2.4rem;
+  }
+  .campo select option{ background: var(--carbon); color: var(--claro); }
+  .campo textarea{ resize: vertical; min-height: 72px; line-height: 1.5; }
+
+  .opciones{ display: flex; flex-wrap: wrap; gap: .45rem; }
+
+  .aviso{
+    font-family: var(--dato);
+    font-size: .72rem;
+    color: var(--ambar);
+    margin: -.55rem 0 1.1rem;
+    min-height: 1.1em;
+  }
+
+  .boton-encargo{ width: 100%; }
+
+  .letra-chica{
+    font-size: .76rem;
+    color: var(--niebla-baja);
+    text-align: center;
+    margin: .9rem 0 0;
+    line-height: 1.5;
+  }
+
+  /* ================= Proceso ================= */
+
+  .proceso{
+    border-top: 1px solid var(--linea);
+    background: linear-gradient(180deg, var(--carbon) 0%, var(--abismo) 100%);
+    padding-block: clamp(3rem, 6vw, 4.75rem);
+  }
+  .proceso h2{
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: clamp(1.6rem, 3.8vw, 2.4rem);
+    letter-spacing: -.035em;
+    margin: 0 0 2.2rem;
+  }
+  .pasos{
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(215px, 1fr));
+    gap: 1.9rem;
+  }
+  .paso-num{
+    font-family: var(--dato);
+    font-size: .7rem;
+    font-weight: 600;
+    letter-spacing: .16em;
+    color: var(--cian);
+    display: block;
+    margin-bottom: .6rem;
+  }
+  .paso h3{
+    font-family: var(--display);
+    font-weight: 500;
+    font-size: 1.06rem;
+    margin: 0 0 .4rem;
+  }
+  .paso p{ margin: 0; font-size: .9rem; color: var(--niebla); }
+
+  /* ================= Pie ================= */
+
+  .pie{
+    border-top: 1px solid var(--linea);
+    padding-block: 2.4rem;
+  }
+  .pie-fila{
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.4rem;
+  }
+  .pie-dato{
+    font-family: var(--dato);
+    font-size: .77rem;
+    color: var(--niebla-baja);
+    line-height: 1.8;
+    margin: 0;
+  }
+  .pie-dato strong{ color: var(--claro); }
+  .pie-dato a{ color: var(--niebla-baja); text-decoration: none; }
+  .pie-dato a:hover{ color: var(--oro); }
+
+  /* ================= Panel de administración ================= */
+
+  .velo{
+    position: fixed;
+    inset: 0;
+    background: rgba(3,6,9,.72);
+    backdrop-filter: blur(3px);
+    -webkit-backdrop-filter: blur(3px);
+    z-index: 90;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .35s var(--curva);
+  }
+  .velo.abierto{ opacity: 1; pointer-events: auto; }
+
+  .panel{
+    position: fixed;
+    top: 0; right: 0;
+    height: 100dvh;
+    width: min(430px, 100%);
+    background: var(--abismo);
+    border-left: 1px solid var(--linea-viva);
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    transform: translateX(102%);
+    transition: transform .45s var(--curva);
+    box-shadow: -30px 0 70px -30px rgba(0,0,0,.95);
+  }
+  .panel.abierto{ transform: none; }
+
+  .panel-cabecera{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1.15rem 1.35rem;
+    border-bottom: 1px solid var(--linea);
+    flex: none;
+  }
+  .panel-cabecera h2{
+    font-family: var(--display);
+    font-weight: 600;
+    font-size: 1.08rem;
+    letter-spacing: -.02em;
+    margin: 0;
+  }
+  .cerrar{
+    background: transparent;
+    border: 1px solid var(--linea-viva);
+    color: var(--niebla);
+    width: 32px; height: 32px;
+    border-radius: 6px;
+    font-size: 1.1rem;
+    line-height: 1;
+    cursor: pointer;
+    transition: color .2s, border-color .2s;
+  }
+  .cerrar:hover{ color: var(--oro); border-color: var(--oro); }
+
+  .panel-cuerpo{
+    padding: 1.35rem;
+    overflow-y: auto;
+    flex: 1;
+  }
+
+  .dos-columnas{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: .9rem;
+  }
+
+  .panel-acciones{
+    display: grid;
+    gap: .6rem;
+    margin-top: 1.4rem;
+  }
+
+  .salida{
+    margin-top: 1.5rem;
+    border-top: 1px solid var(--linea);
+    padding-top: 1.3rem;
+  }
+  .salida h3{
+    font-family: var(--dato);
+    font-size: .7rem;
+    font-weight: 600;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--cian);
+    margin: 0 0 .6rem;
+  }
+  .salida p{
+    font-size: .8rem;
+    color: var(--niebla-baja);
+    margin: 0 0 .8rem;
+    line-height: 1.5;
+  }
+  .codigo{
+    width: 100%;
+    min-height: 210px;
+    font-family: var(--dato);
+    font-size: .74rem;
+    line-height: 1.55;
+    padding: .9rem;
+    border: 1px solid var(--linea-viva);
+    border-radius: 8px;
+    background: var(--carbon);
+    color: var(--cian);
+    resize: vertical;
+    white-space: pre;
+  }
+
+  .advertencia{
+    margin-top: 1.4rem;
+    padding: .9rem 1rem;
+    border: 1px solid rgba(240,139,63,.35);
+    border-left: 3px solid var(--ambar);
+    border-radius: 6px;
+    background: rgba(240,139,63,.07);
+    font-size: .8rem;
+    color: var(--niebla);
+    line-height: 1.5;
+  }
+  .advertencia strong{ color: var(--ambar); }
+
+  .cinta-admin{
+    position: fixed;
+    left: 0; right: 0; bottom: 0;
+    z-index: 80;
+    background: var(--cian);
+    color: #06231F;
+    font-family: var(--dato);
+    font-size: .74rem;
+    font-weight: 600;
+    letter-spacing: .04em;
+    padding: .55rem 1rem;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+  }
+  .cinta-admin.visible{ display: flex; }
+  .cinta-admin button{
+    background: rgba(6,35,31,.16);
+    border: 1px solid rgba(6,35,31,.4);
+    color: #06231F;
+    font-family: inherit;
+    font-size: .72rem;
+    font-weight: 600;
+    padding: .2rem .6rem;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+
+  /* ================= Revelado ================= */
+
+  .revelar{
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity .75s var(--curva), transform .75s var(--curva);
+  }
+  .revelar.visible{ opacity: 1; transform: none; }
+  .revelar[data-retraso="1"]{ transition-delay: .1s; }
+  .revelar[data-retraso="2"]{ transition-delay: .2s; }
+  .revelar[data-retraso="3"]{ transition-delay: .3s; }
+
+  /* ================= Responsivo ================= */
+
+  @media (max-width: 860px){
+    .encargos-caja{ grid-template-columns: 1fr; }
+  }
+
+  @media (max-width: 640px){
+    .promesas{ grid-template-columns: 1fr; }
+    .filtros{ top: 58px; }
+    .buscador{ margin-left: 0; width: 100%; }
+    .enlace-menu{ display: none; }
+  }
+
+  /* ================= Sin movimiento ================= */
+
+  @media (prefers-reduced-motion: reduce){
+    *, *::before, *::after{
+      animation: none !important;
+      transition-duration: .01ms !important;
+    }
+    html{ scroll-behavior: auto; }
+    .ficha{ opacity: 1; transform: none; }
+    .revelar{ opacity: 1; transform: none; }
+    .ficha:hover{ transform: none; }
+  }
+</style>
+
+<header class="cabecera" id="cabecera">
+  <div class="envoltura cabecera-fila">
+    <div class="marca"><span class="led"></span><span id="marca-nombre">Duran'sPhones</span></div>
+    <div class="acciones-cabecera">
+      <a class="enlace-menu" href="#encargos">Pedidos por encargo</a>
+      <a class="boton" id="wa-cabecera" href="#" target="_blank" rel="noopener">Escribir por WhatsApp</a>
+    </div>
+  </div>
+</header>
+
+<section class="portada">
+  <div class="aurora" aria-hidden="true"></div>
+  <div class="envoltura">
+    <span class="etiqueta revelar" id="etiqueta-zona">Usados revisados</span>
+    <h1 class="revelar" data-retraso="1">Cada equipo llega con su <em>hoja de condición</em>.</h1>
+    <p class="revelar" data-retraso="2" id="entrada-texto"></p>
+
+    <div class="promesas revelar" data-retraso="3">
+      <div class="promesa">
+        <span class="promesa-clave">Antes de pagar</span>
+        <span class="promesa-valor">Lo revisas en persona, con calma</span>
+      </div>
+      <div class="promesa">
+        <span class="promesa-clave">Garantía</span>
+        <span class="promesa-valor">15 a 60 días según el equipo</span>
+      </div>
+      <div class="promesa">
+        <span class="promesa-clave">IMEI</span>
+        <span class="promesa-valor">Verificado y libre de reporte</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<nav class="filtros" aria-label="Filtros de catálogo">
+  <div class="envoltura filtros-fila" id="chips">
+    <input class="buscador" id="buscador" type="search" placeholder="Buscar modelo…" aria-label="Buscar modelo">
+  </div>
+</nav>
+
+<main class="envoltura">
+  <p class="conteo" id="conteo"></p>
+  <div class="rejilla" id="rejilla"></div>
+</main>
+
+<section class="encargos" id="encargos">
+  <div class="envoltura">
+    <div class="encargos-caja">
+
+      <div class="revelar">
+        <span class="etiqueta">Pedidos por encargo</span>
+        <h2>¿No está en el catálogo? Lo conseguimos.</h2>
+        <p class="encargos-texto">Dinos qué modelo buscas y con cuánto cuentas. Rastreamos el equipo, te mandamos fotos y la hoja de condición completa antes de que decidas nada.</p>
+
+        <ul class="reglas">
+          <li class="regla"><span>Te respondemos en</span><span id="regla-respuesta"></span></li>
+          <li class="regla"><span>Anticipo al confirmar</span><span id="regla-anticipo"></span></li>
+          <li class="regla"><span>Tiempo de entrega</span><span id="regla-entrega"></span></li>
+          <li class="regla"><span>Si no te gusta al verlo</span><span>Se devuelve el anticipo</span></li>
+        </ul>
+      </div>
+
+      <div class="formulario revelar" data-retraso="1">
+        <h3>Arma tu encargo</h3>
+        <p>Se envía por WhatsApp con todo lo que escribas aquí.</p>
+
+        <div class="campo">
+          <label for="que-busco">Qué modelo buscas</label>
+          <input type="text" id="que-busco" placeholder="Ej. iPhone 14 Pro 256 GB negro">
+        </div>
+
+        <div class="campo">
+          <label for="presupuesto">Tu presupuesto</label>
+          <select id="presupuesto">
+            <option>Hasta $200</option>
+            <option selected>Entre $200 y $400</option>
+            <option>Entre $400 y $700</option>
+            <option>Más de $700</option>
+            <option>Todavía no lo tengo definido</option>
+          </select>
+        </div>
+
+        <div class="campo">
+          <label>Condición que buscas</label>
+          <div class="opciones" id="opciones-condicion">
+            <button type="button" class="chip" aria-pressed="true">Como nuevo</button>
+            <button type="button" class="chip" aria-pressed="false">Buen estado</button>
+            <button type="button" class="chip" aria-pressed="false">El más barato</button>
+            <button type="button" class="chip" aria-pressed="false">Sellado</button>
+          </div>
+        </div>
+
+        <div class="campo">
+          <label for="urgencia">Para cuándo lo necesitas</label>
+          <select id="urgencia">
+            <option>Sin prisa</option>
+            <option selected>Esta semana</option>
+            <option>Lo antes posible</option>
+          </select>
+        </div>
+
+        <p class="aviso" id="aviso"></p>
+
+        <button type="button" class="boton boton-encargo" id="enviar-encargo">Enviar encargo por WhatsApp</button>
+        <p class="letra-chica">No cobramos nada por buscar. El anticipo solo se pide cuando aceptas el equipo y el precio.</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<section class="proceso">
+  <div class="envoltura">
+    <h2 class="revelar">Cómo se compra</h2>
+    <div class="pasos">
+      <div class="paso revelar">
+        <span class="paso-num">PASO 01</span>
+        <h3>Escribes por WhatsApp</h3>
+        <p>Elige el equipo y toca el botón. El mensaje ya va escrito con el modelo y el precio.</p>
+      </div>
+      <div class="paso revelar" data-retraso="1">
+        <span class="paso-num">PASO 02</span>
+        <h3>Nos vemos y lo revisas</h3>
+        <p>Enciendes el equipo, revisas la batería, metes tu SIM. Todo el tiempo que necesites.</p>
+      </div>
+      <div class="paso revelar" data-retraso="2">
+        <span class="paso-num">PASO 03</span>
+        <h3>Pagas si te convence</h3>
+        <p>Efectivo o transferencia. Te queda el comprobante con el IMEI y los días de garantía.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="pie">
+  <div class="envoltura pie-fila">
+    <p class="pie-dato">
+      <strong id="pie-marca"></strong><br>
+      <span id="pie-lugar"></span><br>
+      <a id="pie-tel" href="#"></a>
+    </p>
+    <a class="boton fantasma" id="wa-pie" href="#" target="_blank" rel="noopener">Ver disponibilidad hoy</a>
+  </div>
+</footer>
+
+<!-- ============ Panel de administración ============ -->
+
+<div class="velo" id="velo"></div>
+
+<aside class="panel" id="panel" aria-hidden="true" aria-label="Panel de administración">
+  <div class="panel-cabecera">
+    <h2 id="panel-titulo">Entrar al panel</h2>
+    <button class="cerrar" id="cerrar-panel" aria-label="Cerrar panel">&times;</button>
+  </div>
+
+  <div class="panel-cuerpo">
+
+    <!-- Paso 1: clave -->
+    <div id="acceso">
+      <div class="campo">
+        <label for="clave">Clave de administrador</label>
+        <input type="password" id="clave" placeholder="••••••••" autocomplete="off">
+      </div>
+      <p class="aviso" id="aviso-clave"></p>
+      <button type="button" class="boton" style="width:100%" id="entrar">Entrar</button>
+
+      <div class="advertencia">
+        <strong>Esto no es seguridad real.</strong> La clave está escrita dentro del archivo, así que cualquiera que abra el código fuente puede leerla. Sirve para que el panel no estorbe a los visitantes, nada más.
+      </div>
+    </div>
+
+    <!-- Paso 2: formulario -->
+    <div id="alta" hidden>
+      <div class="campo">
+        <label for="a-nombre">Nombre del equipo</label>
+        <input type="text" id="a-nombre" placeholder="iPhone 14 Pro">
+      </div>
+
+      <div class="campo">
+        <label for="a-detalle">Detalle</label>
+        <input type="text" id="a-detalle" placeholder="256 GB · Morado">
+      </div>
+
+      <div class="dos-columnas">
+        <div class="campo">
+          <label for="a-categoria">Categoría</label>
+          <input type="text" id="a-categoria" placeholder="Teléfonos" list="lista-categorias">
+          <datalist id="lista-categorias"></datalist>
+        </div>
+        <div class="campo">
+          <label for="a-precio">Precio USD</label>
+          <input type="number" id="a-precio" min="0" step="1" placeholder="450">
+        </div>
+      </div>
+
+      <div class="dos-columnas">
+        <div class="campo">
+          <label for="a-grado">Grado</label>
+          <select id="a-grado">
+            <option value="A">A · casi nuevo</option>
+            <option value="B" selected>B · detalles menores</option>
+            <option value="C">C · marcas de uso</option>
+          </select>
+        </div>
+        <div class="campo">
+          <label for="a-bateria">Batería %</label>
+          <input type="number" id="a-bateria" min="0" max="100" step="1" placeholder="vacío si no aplica">
+        </div>
+      </div>
+
+      <div class="dos-columnas">
+        <div class="campo">
+          <label for="a-incluye">Incluye</label>
+          <input type="text" id="a-incluye" placeholder="Caja y cable">
+        </div>
+        <div class="campo">
+          <label for="a-garantia">Garantía</label>
+          <input type="text" id="a-garantia" placeholder="30 días">
+        </div>
+      </div>
+
+      <div class="campo">
+        <label for="a-foto">Enlace de la foto</label>
+        <input type="text" id="a-foto" placeholder="https://… (opcional)">
+      </div>
+
+      <div class="campo">
+        <label for="a-nota">Nota honesta</label>
+        <textarea id="a-nota" placeholder="Rayón en el borde inferior. Pantalla impecable."></textarea>
+      </div>
+
+      <div class="campo">
+        <label for="a-estado">Estado</label>
+        <select id="a-estado">
+          <option value="disponible" selected>Disponible</option>
+          <option value="vendido">Vendido</option>
+        </select>
+      </div>
+
+      <p class="aviso" id="aviso-alta"></p>
+
+      <div class="panel-acciones">
+        <button type="button" class="boton" id="agregar">Agregar al catálogo</button>
+        <button type="button" class="boton fantasma" id="limpiar">Limpiar campos</button>
+      </div>
+
+      <div class="panel-acciones">
+        <button type="button" class="boton fantasma" id="vaciar-guardado">Vaciar lo agregado</button>
+      </div>
+
+      <div class="salida">
+        <h3>Código para que lo vean todos</h3>
+        <p>Lo que agregas ya queda guardado en este navegador y sobrevive a un recargo. Pero solo tú lo ves: si querés que aparezca para cualquier visitante, copiá este bloque y pegalo dentro de <code>DISPOSITIVOS</code>, arriba en el archivo, y publicá esa versión.</p>
+        <textarea class="codigo" id="codigo" readonly placeholder="Agrega un equipo y aquí aparece su bloque de código."></textarea>
+        <div class="panel-acciones">
+          <button type="button" class="boton fantasma" id="copiar">Copiar código</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</aside>
+
+<div class="cinta-admin" id="cinta">
+  <span>Modo administrador · los equipos nuevos se guardan en este navegador · pegá el código para que otros los vean</span>
+  <button type="button" id="abrir-desde-cinta">Abrir panel</button>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  const rejilla  = document.getElementById("rejilla");
+  const conteo   = document.getElementById("conteo");
+  const chips    = document.getElementById("chips");
+  const buscador = document.getElementById("buscador");
+  const cabecera = document.getElementById("cabecera");
+
+  const sinMovimiento = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  /* ---------- Equipos agregados desde el panel, guardados en este navegador ---------- */
+
+  const CLAVE_ALMACENAMIENTO = "duransphones_extras_v1";
+
+  function cargarExtras(){
+    try{
+      const guardado = JSON.parse(localStorage.getItem(CLAVE_ALMACENAMIENTO));
+      return Array.isArray(guardado) ? guardado : [];
+    }catch(err){
+      return [];
+    }
+  }
+
+  function guardarExtras(){
+    try{
+      localStorage.setItem(CLAVE_ALMACENAMIENTO, JSON.stringify(extras));
+      return true;
+    }catch(err){
+      return false;
+    }
+  }
+
+  let extras = cargarExtras();
+
+  // Copia de trabajo: lo que se muestra en pantalla.
+  // Empieza con lo guardado en este navegador, seguido del catálogo del archivo.
+  let catalogo = extras.concat(DISPOSITIVOS);
+
+  let categoriaActiva = "Todo";
+  let textoBuscado = "";
+
+  /* ---------- Textos que dependen de la zona editable ---------- */
+
+  document.getElementById("marca-nombre").textContent = TIENDA;
+  document.getElementById("pie-marca").textContent = TIENDA;
+  document.getElementById("pie-lugar").textContent = ZONA + ", " + CIUDAD;
+  document.getElementById("etiqueta-zona").textContent = "Usados revisados · " + ZONA;
+  document.getElementById("entrada-texto").textContent =
+    "Teléfonos, laptops y tablets en " + CIUDAD + ", con la salud real de la batería, " +
+    "el grado de uso y qué trae en la caja — publicado antes de que preguntes.";
+  document.title = TIENDA + " · Dispositivos revisados en " + CIUDAD;
+
+  document.getElementById("regla-respuesta").textContent = ENCARGO.respuesta;
+  document.getElementById("regla-anticipo").textContent  = ENCARGO.anticipo;
+  document.getElementById("regla-entrega").textContent   = ENCARGO.entrega;
+
+  function enlaceWhatsApp(mensaje){
+    return "https://wa.me/" + WHATSAPP + "?text=" + encodeURIComponent(mensaje);
+  }
+
+  const local = WHATSAPP.replace(/^503/, "");
+  const telVisible = local.length === 8 ? local.slice(0,4) + " " + local.slice(4) : local;
+
+  const pieTel = document.getElementById("pie-tel");
+  pieTel.textContent = "WhatsApp " + telVisible;
+  pieTel.href = enlaceWhatsApp("Hola " + TIENDA + ", vengo del sitio web.");
+  pieTel.target = "_blank";
+  pieTel.rel = "noopener";
+
+  document.getElementById("wa-cabecera").href =
+    enlaceWhatsApp("Hola " + TIENDA + ", vi su catálogo y quiero preguntar por un equipo.");
+  document.getElementById("wa-pie").href =
+    enlaceWhatsApp("Hola " + TIENDA + ", ¿qué equipos tienen disponibles hoy?");
+
+  /* ---------- Cabecera y revelados ---------- */
+
+  const alDesplazar = () => cabecera.classList.toggle("pegada", window.scrollY > 12);
+  window.addEventListener("scroll", alDesplazar, { passive: true });
+  alDesplazar();
+
+  const observadorRevelar = new IntersectionObserver((entradas) => {
+    entradas.forEach(e => {
+      if (e.isIntersecting){
+        e.target.classList.add("visible");
+        observadorRevelar.unobserve(e.target);
+      }
+    });
+  }, { threshold: .16, rootMargin: "0px 0px -40px 0px" });
+
+  document.querySelectorAll(".revelar").forEach(el => observadorRevelar.observe(el));
+
+  const observadorBarras = new IntersectionObserver((entradas) => {
+    entradas.forEach(e => {
+      if (e.isIntersecting){
+        e.target.style.width = e.target.dataset.nivel + "%";
+        observadorBarras.unobserve(e.target);
+      }
+    });
+  }, { threshold: .4 });
+
+  /* ---------- Filtros ---------- */
+
+  function reconstruirFiltros(){
+    [...chips.querySelectorAll(".chip")].forEach(c => c.remove());
+    const categorias = ["Todo"].concat([...new Set(catalogo.map(d => d.categoria))]);
+
+    categorias.forEach(cat => {
+      const b = document.createElement("button");
+      b.className = "chip";
+      b.type = "button";
+      b.textContent = cat;
+      b.setAttribute("aria-pressed", String(cat === categoriaActiva));
+      b.addEventListener("click", () => {
+        categoriaActiva = cat;
+        [...chips.querySelectorAll(".chip")].forEach(c =>
+          c.setAttribute("aria-pressed", String(c.textContent === cat))
+        );
+        pintar();
+      });
+      chips.insertBefore(b, buscador);
+    });
+  }
+
+  buscador.addEventListener("input", e => {
+    textoBuscado = e.target.value.trim().toLowerCase();
+    pintar();
+  });
+
+  /* ---------- Catálogo ---------- */
+
+  function escapar(t){
+    return String(t)
+      .replace(/&/g, "&amp;").replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+  }
+
+  function claseBateria(p){
+    if (p >= 88) return "";
+    if (p >= 80) return "media";
+    return "baja";
+  }
+
+  function ficha(d, indice){
+    const vendido = d.estado === "vendido";
+    const art = document.createElement("article");
+    art.className = "ficha" + (vendido ? " vendida" : "");
+    art.style.setProperty("--i", indice);
+
+    const imagen = d.foto
+      ? `<img src="${escapar(d.foto)}" alt="${escapar(d.nombre)}" loading="lazy">`
+      : `<span class="sin-foto">${escapar(d.nombre)}</span>`;
+
+    const hayBateria = d.bateria !== null && d.bateria !== undefined && d.bateria !== "";
+    const bateria = !hayBateria ? "" : `
+      <div class="renglon">
+        <dt>Batería</dt>
+        <dd>
+          <span class="medidor">
+            <span class="barra"><i class="${claseBateria(d.bateria)}" data-nivel="${d.bateria}"></i></span>
+            ${d.bateria}%
+          </span>
+        </dd>
+      </div>`;
+
+    const mensaje =
+      "Hola " + TIENDA + ", me interesa el " + d.nombre +
+      " (" + d.detalle + ") de $" + d.precio + ". ¿Sigue disponible?";
+
+    const cinta = vendido ? '<span class="sello">Vendido</span>' : "";
+
+    art.innerHTML = `
+      <div class="lienzo">
+        ${imagen}
+        ${cinta}
+        <span class="grado" title="Grado de condición">${escapar(d.grado)}</span>
+      </div>
+      <div class="cuerpo">
+        <h3 class="nombre">${escapar(d.nombre)}</h3>
+        <p class="detalle">${escapar(d.detalle)}</p>
+        <p class="precio">$${d.precio} <span>USD</span></p>
+        <dl class="condicion">
+          ${bateria}
+          <div class="renglon"><dt>Incluye</dt><dd>${escapar(d.incluye)}</dd></div>
+          <div class="renglon"><dt>Garantía</dt><dd>${escapar(d.garantia)}</dd></div>
+        </dl>
+        ${d.nota ? `<p class="nota">${escapar(d.nota)}</p>` : ""}
+      </div>
+      <div class="pie-ficha">
+        ${vendido
+          ? '<span class="boton boton-ficha apagado">Ya no disponible</span>'
+          : `<a class="boton boton-ficha" href="${enlaceWhatsApp(mensaje)}" target="_blank" rel="noopener">Preguntar por este</a>`}
+      </div>`;
+
+    return art;
+  }
+
+  function pintar(){
+    const lista = catalogo.filter(d => {
+      const porCategoria = categoriaActiva === "Todo" || d.categoria === categoriaActiva;
+      const texto = (d.nombre + " " + d.detalle).toLowerCase();
+      const porTexto = textoBuscado === "" || texto.includes(textoBuscado);
+      return porCategoria && porTexto;
+    });
+
+    rejilla.innerHTML = "";
+
+    if (lista.length === 0){
+      const v = document.createElement("div");
+      v.className = "vacio";
+      v.innerHTML = `
+        <p>No hay equipos que coincidan con esa búsqueda.</p>
+        <a class="boton fantasma" href="#encargos">Pídelo por encargo</a>`;
+      rejilla.appendChild(v);
+      conteo.textContent = "0 equipos";
+      return;
+    }
+
+    lista.forEach((d, i) => rejilla.appendChild(ficha(d, i)));
+
+    rejilla.querySelectorAll(".barra i").forEach(b => {
+      if (sinMovimiento) b.style.width = b.dataset.nivel + "%";
+      else observadorBarras.observe(b);
+    });
+
+    const disponibles = lista.filter(d => d.estado !== "vendido").length;
+    conteo.textContent =
+      lista.length + (lista.length === 1 ? " equipo" : " equipos") +
+      " · " + disponibles + " disponible" + (disponibles === 1 ? "" : "s");
+  }
+
+  reconstruirFiltros();
+  pintar();
+
+  /* ---------- Encargo ---------- */
+
+  const opcionesCondicion = document.getElementById("opciones-condicion");
+  const queBusco    = document.getElementById("que-busco");
+  const presupuesto = document.getElementById("presupuesto");
+  const urgencia    = document.getElementById("urgencia");
+  const aviso       = document.getElementById("aviso");
+
+  let condicion = "Como nuevo";
+
+  opcionesCondicion.addEventListener("click", e => {
+    const b = e.target.closest(".chip");
+    if (!b) return;
+    condicion = b.textContent;
+    [...opcionesCondicion.querySelectorAll(".chip")].forEach(c =>
+      c.setAttribute("aria-pressed", String(c === b))
+    );
+  });
+
+  queBusco.addEventListener("input", () => { aviso.textContent = ""; });
+
+  document.getElementById("enviar-encargo").addEventListener("click", () => {
+    const modelo = queBusco.value.trim();
+    if (modelo === ""){
+      aviso.textContent = "Escribe qué modelo buscas para poder enviarlo.";
+      queBusco.focus();
+      return;
+    }
+    const mensaje =
+      "Hola " + TIENDA + ", quiero hacer un encargo.\n\n" +
+      "Modelo: " + modelo + "\n" +
+      "Presupuesto: " + presupuesto.value + "\n" +
+      "Condición: " + condicion + "\n" +
+      "Lo necesito: " + urgencia.value;
+    window.open(enlaceWhatsApp(mensaje), "_blank", "noopener");
+  });
+
+  /* ================= Panel de administración ================= */
+
+  const panel   = document.getElementById("panel");
+  const velo    = document.getElementById("velo");
+  const cinta   = document.getElementById("cinta");
+  const acceso  = document.getElementById("acceso");
+  const alta    = document.getElementById("alta");
+  const titulo  = document.getElementById("panel-titulo");
+  const codigo  = document.getElementById("codigo");
+  const avisoAlta = document.getElementById("aviso-alta");
+
+  let dentro = false;
+
+  function abrirPanel(){
+    panel.classList.add("abierto");
+    velo.classList.add("abierto");
+    panel.setAttribute("aria-hidden", "false");
+    (dentro ? document.getElementById("a-nombre") : document.getElementById("clave")).focus();
+  }
+
+  function cerrarPanel(){
+    panel.classList.remove("abierto");
+    velo.classList.remove("abierto");
+    panel.setAttribute("aria-hidden", "true");
+  }
+
+  document.getElementById("cerrar-panel").addEventListener("click", cerrarPanel);
+  velo.addEventListener("click", cerrarPanel);
+  document.getElementById("abrir-desde-cinta").addEventListener("click", abrirPanel);
+
+  document.addEventListener("keydown", e => {
+    if (e.key === "Escape") cerrarPanel();
+  });
+
+  // Se abre con #admin en la dirección
+  function revisarDireccion(){
+    if (location.hash.toLowerCase() === "#admin") abrirPanel();
+  }
+  window.addEventListener("hashchange", revisarDireccion);
+  revisarDireccion();
+
+  // Entrar
+  const campoClave = document.getElementById("clave");
+  const avisoClave = document.getElementById("aviso-clave");
+
+  function intentarEntrar(){
+    if (campoClave.value === ADMIN_CLAVE){
+      dentro = true;
+      acceso.hidden = true;
+      alta.hidden = false;
+      titulo.textContent = "Agregar dispositivo";
+      cinta.classList.add("visible");
+      avisoClave.textContent = "";
+      campoClave.value = "";
+      document.getElementById("a-nombre").focus();
+      refrescarCategorias();
+    } else {
+      avisoClave.textContent = "Clave incorrecta.";
+      campoClave.select();
+    }
+  }
+
+  document.getElementById("entrar").addEventListener("click", intentarEntrar);
+  campoClave.addEventListener("keydown", e => {
+    if (e.key === "Enter") intentarEntrar();
+  });
+
+  // Sugerencias de categoría a partir de lo que ya existe
+  function refrescarCategorias(){
+    const dl = document.getElementById("lista-categorias");
+    dl.innerHTML = "";
+    [...new Set(catalogo.map(d => d.categoria))].forEach(c => {
+      const o = document.createElement("option");
+      o.value = c;
+      dl.appendChild(o);
+    });
+  }
+
+  const campos = {
+    nombre:    document.getElementById("a-nombre"),
+    detalle:   document.getElementById("a-detalle"),
+    categoria: document.getElementById("a-categoria"),
+    precio:    document.getElementById("a-precio"),
+    grado:     document.getElementById("a-grado"),
+    bateria:   document.getElementById("a-bateria"),
+    incluye:   document.getElementById("a-incluye"),
+    garantia:  document.getElementById("a-garantia"),
+    foto:      document.getElementById("a-foto"),
+    nota:      document.getElementById("a-nota"),
+    estado:    document.getElementById("a-estado")
+  };
+
+  function comillas(t){
+    // Escapa comillas dobles y barras para que el bloque generado sea válido
+    return '"' + String(t).replace(/\\/g, "\\\\").replace(/"/g, '\\"') + '"';
+  }
+
+  function bloqueCodigo(d){
+    return "  {\n" +
+      "    nombre: "    + comillas(d.nombre)    + ",\n" +
+      "    detalle: "   + comillas(d.detalle)   + ",\n" +
+      "    categoria: " + comillas(d.categoria) + ",\n" +
+      "    precio: "    + d.precio              + ",\n" +
+      "    grado: "     + comillas(d.grado)     + ",\n" +
+      "    bateria: "   + (d.bateria === null ? "null" : d.bateria) + ",\n" +
+      "    incluye: "   + comillas(d.incluye)   + ",\n" +
+      "    garantia: "  + comillas(d.garantia)  + ",\n" +
+      "    nota: "      + comillas(d.nota)      + ",\n" +
+      "    foto: "      + comillas(d.foto)      + ",\n" +
+      "    estado: "    + comillas(d.estado)    + "\n" +
+      "  }";
+  }
+
+  document.getElementById("agregar").addEventListener("click", () => {
+    const nombre = campos.nombre.value.trim();
+    const precio = parseFloat(campos.precio.value);
+
+    if (nombre === ""){
+      avisoAlta.textContent = "Falta el nombre del equipo.";
+      campos.nombre.focus();
+      return;
+    }
+    if (isNaN(precio) || precio < 0){
+      avisoAlta.textContent = "El precio tiene que ser un número.";
+      campos.precio.focus();
+      return;
+    }
+
+    const bat = campos.bateria.value.trim();
+
+    const nuevo = {
+      nombre:    nombre,
+      detalle:   campos.detalle.value.trim()   || "Sin detalle",
+      categoria: campos.categoria.value.trim() || "Otros",
+      precio:    precio,
+      grado:     campos.grado.value,
+      bateria:   bat === "" ? null : Math.max(0, Math.min(100, parseInt(bat, 10))),
+      incluye:   campos.incluye.value.trim()   || "Solo equipo",
+      garantia:  campos.garantia.value.trim()  || "Sin garantía",
+      nota:      campos.nota.value.trim(),
+      foto:      campos.foto.value.trim(),
+      estado:    campos.estado.value
+    };
+
+    extras.unshift(nuevo);
+    const guardado = guardarExtras();
+    catalogo = extras.concat(DISPOSITIVOS);
+    categoriaActiva = "Todo";
+    textoBuscado = "";
+    buscador.value = "";
+    reconstruirFiltros();
+    refrescarCategorias();
+    pintar();
+
+    codigo.value = bloqueCodigo(nuevo) + ",";
+    avisoAlta.style.color = guardado ? "var(--cian)" : "var(--ambar)";
+    avisoAlta.textContent = guardado
+      ? "Agregado y guardado en este navegador."
+      : "Agregado, pero no se pudo guardar en este navegador (¿modo privado o almacenamiento bloqueado?). Se perderá al recargar salvo que copies el código de abajo.";
+
+    cerrarPanel();
+    document.querySelector("main").scrollIntoView({ behavior: sinMovimiento ? "auto" : "smooth" });
+  });
+
+  document.getElementById("vaciar-guardado").addEventListener("click", () => {
+    if (extras.length === 0) return;
+    if (!confirm("¿Vaciar todos los equipos agregados desde este panel? Esto no afecta el catálogo del archivo, solo lo guardado en este navegador.")) return;
+
+    extras = [];
+    guardarExtras();
+    catalogo = extras.concat(DISPOSITIVOS);
+    categoriaActiva = "Todo";
+    textoBuscado = "";
+    buscador.value = "";
+    reconstruirFiltros();
+    refrescarCategorias();
+    pintar();
+
+    codigo.value = "";
+    avisoAlta.style.color = "var(--cian)";
+    avisoAlta.textContent = "Se vació lo guardado en este navegador.";
+  });
+
+  document.getElementById("limpiar").addEventListener("click", () => {
+    Object.values(campos).forEach(c => {
+      if (c.tagName === "SELECT") c.selectedIndex = c.id === "a-grado" ? 1 : 0;
+      else c.value = "";
+    });
+    avisoAlta.textContent = "";
+    campos.nombre.focus();
+  });
+
+  document.getElementById("copiar").addEventListener("click", async () => {
+    if (codigo.value.trim() === "") return;
+    codigo.select();
+    try{
+      await navigator.clipboard.writeText(codigo.value);
+      avisoAlta.style.color = "var(--cian)";
+      avisoAlta.textContent = "Código copiado.";
+    }catch(err){
+      avisoAlta.style.color = "var(--ambar)";
+      avisoAlta.textContent = "No pude copiarlo solo. Ya quedó seleccionado: usa Cmd+C.";
+    }
+  });
+
+})();
+</script>
+
+</body>
+</html>
