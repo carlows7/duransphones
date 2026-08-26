@@ -41,7 +41,19 @@ const ADMIN_CLAVE = "cambiaesto";
 //    grado:    "A" casi nuevo · "B" detalles menores · "C" con marcas de uso
 //    bateria:  porcentaje de salud. Pon null si no aplica.
 //    estado:   "disponible" o "vendido"
-//    foto:     enlace a la imagen. Déjalo en "" y sale un recuadro con el nombre.
+//    fotos:    lista de enlaces a fotos REALES de ese equipo (sacale tú las fotos).
+//              La primera es la foto principal. Déjala en [] y sale un ícono
+//              genérico de su categoría mientras no tengas fotos todavía.
+//              Ej: fotos: ["https://…-frente.jpg", "https://…-atras.jpg"]
+
+// Marcadores de posición mientras no tenés fotos reales cargadas.
+// Son genéricos (no son fotos de ningún equipo) — sirven para que puedas
+// PROBAR la galería y el carrusel ya mismo. Reemplaza cada uno por el
+// enlace real de tu foto en cuanto la tengas.
+const FOTO_MARCADOR_FRENTE  = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='500' height='500'%3E%3Crect width='500' height='500' fill='%233A2C16'/%3E%3Ctext x='250' y='240' font-family='sans-serif' font-size='24' fill='%23E0B255' text-anchor='middle'%3EFoto de frente%3C/text%3E%3Ctext x='250' y='272' font-family='sans-serif' font-size='15' fill='%23B7AC99' text-anchor='middle'%3E(reemplazá esto con la foto real)%3C/text%3E%3C/svg%3E";
+const FOTO_MARCADOR_ATRAS   = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='500' height='500'%3E%3Crect width='500' height='500' fill='%23201A12'/%3E%3Ctext x='250' y='240' font-family='sans-serif' font-size='24' fill='%23E0B255' text-anchor='middle'%3EFoto de atrás%3C/text%3E%3Ctext x='250' y='272' font-family='sans-serif' font-size='15' fill='%23B7AC99' text-anchor='middle'%3E(reemplazá esto con la foto real)%3C/text%3E%3C/svg%3E";
+const FOTO_MARCADOR_DETALLE = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='500' height='500'%3E%3Crect width='500' height='500' fill='%2316130E'/%3E%3Ctext x='250' y='240' font-family='sans-serif' font-size='24' fill='%23E0B255' text-anchor='middle'%3EDetalle / marcas de uso%3C/text%3E%3Ctext x='250' y='272' font-family='sans-serif' font-size='15' fill='%23B7AC99' text-anchor='middle'%3E(reemplazá esto con la foto real)%3C/text%3E%3C/svg%3E";
+const FOTOS_MARCADOR = [FOTO_MARCADOR_FRENTE, FOTO_MARCADOR_ATRAS, FOTO_MARCADOR_DETALLE];
 
 const DISPOSITIVOS = [
   {
@@ -54,7 +66,7 @@ const DISPOSITIVOS = [
     incluye: "Caja y cable",
     garantia: "30 días",
     nota: "Libre de fábrica. Sin rayones en pantalla.",
-    foto: "",
+    fotos: FOTOS_MARCADOR,
     estado: "disponible"
   },
   {
@@ -67,7 +79,7 @@ const DISPOSITIVOS = [
     incluye: "Solo equipo",
     garantia: "30 días",
     nota: "Micro rayón en la esquina inferior derecha.",
-    foto: "",
+    fotos: FOTOS_MARCADOR,
     estado: "disponible"
   },
   {
@@ -80,7 +92,7 @@ const DISPOSITIVOS = [
     incluye: "Cargador original",
     garantia: "60 días",
     nota: "212 ciclos de carga.",
-    foto: "",
+    fotos: FOTOS_MARCADOR,
     estado: "disponible"
   },
   {
@@ -93,7 +105,7 @@ const DISPOSITIVOS = [
     incluye: "Cable y cubo",
     garantia: "30 días",
     nota: "Funda incluida sin costo.",
-    foto: "",
+    fotos: FOTOS_MARCADOR,
     estado: "disponible"
   },
   {
@@ -106,7 +118,7 @@ const DISPOSITIVOS = [
     incluye: "Caja completa",
     garantia: "15 días",
     nota: "Almohadillas nuevas.",
-    foto: "",
+    fotos: FOTOS_MARCADOR,
     estado: "disponible"
   },
   {
@@ -119,7 +131,7 @@ const DISPOSITIVOS = [
     incluye: "Solo equipo",
     garantia: "15 días",
     nota: "Marcas de uso en la tapa. Pantalla impecable.",
-    foto: "",
+    fotos: FOTOS_MARCADOR,
     estado: "vendido"
   }
 ];
@@ -612,23 +624,90 @@ const ENCARGO = {
     place-items: center;
     position: relative;
     overflow: hidden;
+    transform-style: preserve-3d;
+    transition: transform .18s var(--curva-corta), box-shadow .3s var(--curva-corta);
   }
+  .lienzo.con-fotos{ cursor: pointer; }
+  .lienzo.con-fotos:hover{ box-shadow: var(--sombra-lg); }
   .lienzo img{
     width: 100%; height: 100%;
     object-fit: cover;
     display: block;
     transition: transform .8s var(--curva);
+    pointer-events: none;
   }
   .ficha:hover .lienzo img{ transform: scale(1.06); }
 
   .sin-foto{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: .9rem;
+    padding: 1rem;
+    pointer-events: none;
+  }
+  .sin-foto svg{ width: 54px; height: 54px; color: var(--oro); opacity: .5; }
+  .sin-foto span{
     font-family: var(--display);
     font-weight: 600;
-    font-size: 1.08rem;
+    font-size: 1.05rem;
     color: var(--tinta-baja);
     text-align: center;
-    padding: 1rem;
     line-height: 1.3;
+  }
+
+  .foto-flecha{
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 34px; height: 34px;
+    border-radius: 50%;
+    border: 1px solid rgba(224,178,85,.4);
+    background: rgba(10,8,6,.68);
+    color: var(--tinta);
+    font-size: 1.15rem;
+    line-height: 1;
+    display: grid;
+    place-items: center;
+    cursor: pointer;
+    opacity: 0;
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    transition: opacity .25s var(--curva-corta), background .25s var(--curva-corta),
+                border-color .25s var(--curva-corta), color .25s var(--curva-corta);
+  }
+  .lienzo.con-fotos:hover .foto-flecha{ opacity: 1; }
+  .foto-flecha:hover{ background: var(--oro-tenue); border-color: var(--oro); color: var(--oro-alto); }
+  .foto-prev{ left: .6rem; }
+  .foto-next{ right: .6rem; }
+
+  .foto-puntos{
+    position: absolute;
+    bottom: .8rem; left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    gap: .4rem;
+    padding: .4rem .55rem;
+    border-radius: 999px;
+    background: rgba(10,8,6,.55);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+  }
+  .punto-foto{
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    border: none;
+    padding: 0;
+    background: rgba(246,241,231,.35);
+    cursor: pointer;
+    transition: background .25s var(--curva-corta), transform .25s var(--curva-corta);
+  }
+  .punto-foto:hover{ background: rgba(246,241,231,.65); }
+  .punto-foto.activo{ background: var(--oro); transform: scale(1.3); }
+
+  @media (hover: none){
+    .foto-flecha{ opacity: 1; }
   }
 
   .sello, .grado{
@@ -1197,6 +1276,96 @@ const ENCARGO = {
     cursor: pointer;
   }
 
+  /* ================= Galería de fotos ================= */
+
+  .velo-galeria{
+    position: fixed;
+    inset: 0;
+    z-index: 110;
+    background: rgba(3,2,1,.9);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .35s var(--curva);
+  }
+  .velo-galeria.abierto{ opacity: 1; pointer-events: auto; }
+
+  .galeria{
+    position: fixed;
+    inset: 0;
+    z-index: 111;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1.1rem;
+    padding: 2rem;
+    opacity: 0;
+    transform: scale(.96);
+    pointer-events: none;
+    transition: opacity .35s var(--curva), transform .35s var(--curva);
+  }
+  .galeria.abierto{ opacity: 1; transform: none; pointer-events: auto; }
+
+  .galeria-imagen{
+    max-width: min(720px, 88vw);
+    max-height: 68vh;
+    border-radius: 18px;
+    border: 1px solid var(--borde-fuerte);
+    box-shadow: var(--sombra-lg);
+    object-fit: contain;
+    background: var(--superficie);
+  }
+
+  .galeria-contador{
+    font-family: var(--dato);
+    font-size: .78rem;
+    color: var(--tinta-baja);
+    letter-spacing: .05em;
+    margin: 0;
+  }
+
+  .cerrar-galeria{
+    position: absolute;
+    top: 1.4rem; right: 1.4rem;
+    width: 42px; height: 42px;
+    border-radius: 50%;
+    border: 1px solid var(--borde-fuerte);
+    background: rgba(22,19,14,.8);
+    color: var(--tinta);
+    font-size: 1.3rem;
+    line-height: 1;
+    cursor: pointer;
+    transition: border-color .25s var(--curva-corta), color .25s var(--curva-corta), transform .3s var(--curva);
+  }
+  .cerrar-galeria:hover{ color: var(--oro); border-color: var(--oro); transform: rotate(90deg); }
+
+  .galeria-flecha{
+    position: fixed;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 48px; height: 48px;
+    border-radius: 50%;
+    border: 1px solid var(--borde-fuerte);
+    background: rgba(22,19,14,.78);
+    color: var(--tinta);
+    font-size: 1.5rem;
+    line-height: 1;
+    display: grid;
+    place-items: center;
+    cursor: pointer;
+    transition: background .25s var(--curva-corta), border-color .25s var(--curva-corta), transform .25s var(--curva-corta), opacity .25s;
+  }
+  .galeria-flecha:hover{ background: var(--oro-tenue); border-color: var(--oro); color: var(--oro-alto); }
+  .galeria-flecha:disabled{ opacity: .25; cursor: default; pointer-events: none; }
+  .galeria-prev{ left: 1.2rem; }
+  .galeria-next{ right: 1.2rem; }
+
+  @media (max-width: 640px){
+    .galeria-flecha{ width: 38px; height: 38px; font-size: 1.15rem; }
+    .galeria-prev{ left: .5rem; }
+    .galeria-next{ right: .5rem; }
+  }
+
   /* ================= Responsivo ================= */
 
   @media (max-width: 860px){
@@ -1462,8 +1631,8 @@ const ENCARGO = {
       </div>
 
       <div class="campo">
-        <label for="a-foto">Enlace de la foto</label>
-        <input type="text" id="a-foto" placeholder="https://… (opcional)">
+        <label for="a-fotos">Enlaces de fotos</label>
+        <textarea id="a-fotos" placeholder="Una por línea, la primera es la principal (opcional)&#10;https://…&#10;https://…"></textarea>
       </div>
 
       <div class="campo">
@@ -1506,6 +1675,17 @@ const ENCARGO = {
 <div class="cinta-admin" id="cinta">
   <span>Modo administrador · los equipos nuevos se guardan en este navegador · pegá el código para que otros los vean</span>
   <button type="button" id="abrir-desde-cinta">Abrir panel</button>
+</div>
+
+<!-- ============ Galería de fotos ============ -->
+
+<div class="velo-galeria" id="velo-galeria"></div>
+<div class="galeria" id="galeria" aria-hidden="true">
+  <button type="button" class="cerrar-galeria" id="cerrar-galeria" aria-label="Cerrar galería">&times;</button>
+  <button type="button" class="galeria-flecha galeria-prev" id="galeria-anterior" aria-label="Foto anterior">‹</button>
+  <img class="galeria-imagen" id="galeria-imagen" src="" alt="">
+  <button type="button" class="galeria-flecha galeria-next" id="galeria-siguiente" aria-label="Foto siguiente">›</button>
+  <p class="galeria-contador" id="galeria-contador"></p>
 </div>
 
 <script>
@@ -1667,14 +1847,38 @@ const ENCARGO = {
     return "baja";
   }
 
+  const ICONOS_CATEGORIA = {
+    "Teléfonos": '<svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="20" y="6" width="24" height="52" rx="5"/><line x1="27" y1="14" x2="37" y2="14"/><circle cx="32" cy="51" r="1.4" fill="currentColor" stroke="none"/></svg>',
+    "Laptops": '<svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="12" y="14" width="40" height="26" rx="2"/><path d="M8 46h48l-4 6H12z"/></svg>',
+    "Tablets": '<svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="14" y="8" width="36" height="48" rx="5"/><line x1="30" y1="52" x2="34" y2="52"/></svg>',
+    "Accesorios": '<svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 30v-6a12 12 0 0 1 24 0v6"/><rect x="13" y="30" width="11" height="17" rx="4.5"/><rect x="40" y="30" width="11" height="17" rx="4.5"/></svg>'
+  };
+  const ICONO_GENERICO = '<svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="14" y="14" width="36" height="36" rx="6"/><path d="M14 40l10-11 8 8 8-9 10 11"/><circle cx="24" cy="24" r="3"/></svg>';
+
+  function iconoCategoria(categoria){
+    return ICONOS_CATEGORIA[categoria] || ICONO_GENERICO;
+  }
+
   function ficha(d){
     const vendido = d.estado === "vendido";
     const art = document.createElement("article");
     art.className = "ficha revelar" + (vendido ? " vendida" : "");
 
-    const imagen = d.foto
-      ? `<img src="${escapar(d.foto)}" alt="${escapar(d.nombre)}" loading="lazy">`
-      : `<span class="sin-foto">${escapar(d.nombre)}</span>`;
+    const fotos = Array.isArray(d.fotos) ? d.fotos.map(f => String(f).trim()).filter(Boolean) : [];
+    const tieneFotos = fotos.length > 0;
+
+    const imagen = tieneFotos
+      ? `<img src="${escapar(fotos[0])}" alt="${escapar(d.nombre)}" loading="lazy">`
+      : `<span class="sin-foto">${iconoCategoria(d.categoria)}<span>${escapar(d.nombre)}</span></span>`;
+
+    const multiplesFotos = fotos.length > 1;
+    const flechasFotos = !multiplesFotos ? "" : `
+        <button type="button" class="foto-flecha foto-prev" aria-label="Foto anterior">‹</button>
+        <button type="button" class="foto-flecha foto-next" aria-label="Foto siguiente">›</button>`;
+    const puntosFotos = !multiplesFotos ? "" : `
+        <div class="foto-puntos">
+          ${fotos.map((_, i) => `<button type="button" class="punto-foto${i === 0 ? " activo" : ""}" data-indice="${i}" aria-label="Foto ${i + 1} de ${fotos.length}"></button>`).join("")}
+        </div>`;
 
     const hayBateria = d.bateria !== null && d.bateria !== undefined && d.bateria !== "";
     const bateria = !hayBateria ? "" : `
@@ -1695,10 +1899,12 @@ const ENCARGO = {
     const cinta = vendido ? '<span class="sello">Vendido</span>' : "";
 
     art.innerHTML = `
-      <div class="lienzo">
+      <div class="lienzo${tieneFotos ? " con-fotos" : ""}">
         ${imagen}
         ${cinta}
         <span class="grado" title="Grado de condición">${escapar(d.grado)}</span>
+        ${flechasFotos}
+        ${puntosFotos}
       </div>
       <div class="cuerpo">
         <h3 class="nombre">${escapar(d.nombre)}</h3>
@@ -1717,6 +1923,8 @@ const ENCARGO = {
           : `<a class="boton boton-ficha" href="${enlaceWhatsApp(mensaje)}" target="_blank" rel="noopener">Preguntar por este</a>`}
       </div>`;
 
+    art._fotos = fotos;
+    art._indiceFoto = 0;
     return art;
   }
 
@@ -1780,6 +1988,112 @@ const ENCARGO = {
       aplicarParallax();
     }
   }
+
+  /* ---------- Tarjeta 3D: la imagen del equipo sigue el mouse ---------- */
+
+  if (!sinMovimiento && window.matchMedia("(hover: hover) and (pointer: fine)").matches){
+    let lienzoActivo = null;
+    rejilla.addEventListener("mousemove", e => {
+      const lienzo = e.target.closest(".lienzo");
+      if (lienzo !== lienzoActivo){
+        if (lienzoActivo) lienzoActivo.style.transform = "";
+        lienzoActivo = lienzo;
+      }
+      if (!lienzo) return;
+      const r = lienzo.getBoundingClientRect();
+      const x = (e.clientX - r.left) / r.width - 0.5;
+      const y = (e.clientY - r.top) / r.height - 0.5;
+      lienzo.style.transform =
+        "perspective(900px) rotateY(" + (x * 16).toFixed(2) + "deg) rotateX(" + (-y * 16).toFixed(2) + "deg) scale(1.035)";
+    });
+    rejilla.addEventListener("mouseleave", () => {
+      if (lienzoActivo){ lienzoActivo.style.transform = ""; lienzoActivo = null; }
+    });
+  }
+
+  /* ---------- Galería: ver más fotos del mismo equipo ---------- */
+
+  const veloGaleria     = document.getElementById("velo-galeria");
+  const galeria         = document.getElementById("galeria");
+  const galeriaImagen    = document.getElementById("galeria-imagen");
+  const galeriaContador  = document.getElementById("galeria-contador");
+  const galeriaAnterior  = document.getElementById("galeria-anterior");
+  const galeriaSiguiente = document.getElementById("galeria-siguiente");
+
+  let fotosGaleria = [];
+  let indiceGaleria = 0;
+
+  function mostrarFotoGaleria(){
+    galeriaImagen.src = fotosGaleria[indiceGaleria];
+    galeriaImagen.alt = "Foto " + (indiceGaleria + 1) + " de " + fotosGaleria.length;
+    galeriaContador.textContent = (indiceGaleria + 1) + " / " + fotosGaleria.length;
+    galeriaAnterior.disabled = indiceGaleria === 0;
+    galeriaSiguiente.disabled = indiceGaleria === fotosGaleria.length - 1;
+  }
+
+  function abrirGaleria(fotos, inicio){
+    if (!fotos || fotos.length === 0) return;
+    fotosGaleria = fotos;
+    indiceGaleria = inicio || 0;
+    mostrarFotoGaleria();
+    veloGaleria.classList.add("abierto");
+    galeria.classList.add("abierto");
+    galeria.setAttribute("aria-hidden", "false");
+  }
+
+  function cerrarGaleria(){
+    veloGaleria.classList.remove("abierto");
+    galeria.classList.remove("abierto");
+    galeria.setAttribute("aria-hidden", "true");
+  }
+
+  function actualizarFotoTarjeta(articulo, indice){
+    const fotos = articulo._fotos;
+    if (!fotos || fotos.length === 0) return;
+    const i = ((indice % fotos.length) + fotos.length) % fotos.length;
+    articulo._indiceFoto = i;
+    const img = articulo.querySelector(".lienzo img");
+    if (img) img.src = fotos[i];
+    articulo.querySelectorAll(".punto-foto").forEach((p, idx) => p.classList.toggle("activo", idx === i));
+  }
+
+  rejilla.addEventListener("click", e => {
+    const flecha = e.target.closest(".foto-flecha");
+    if (flecha){
+      const articulo = flecha.closest(".ficha");
+      const direccion = flecha.classList.contains("foto-prev") ? -1 : 1;
+      actualizarFotoTarjeta(articulo, articulo._indiceFoto + direccion);
+      return;
+    }
+
+    const punto = e.target.closest(".punto-foto");
+    if (punto){
+      const articulo = punto.closest(".ficha");
+      actualizarFotoTarjeta(articulo, parseInt(punto.dataset.indice, 10));
+      return;
+    }
+
+    const lienzo = e.target.closest(".lienzo.con-fotos");
+    if (!lienzo) return;
+    const articulo = lienzo.closest(".ficha");
+    if (articulo && articulo._fotos) abrirGaleria(articulo._fotos, articulo._indiceFoto || 0);
+  });
+
+  galeriaAnterior.addEventListener("click", () => {
+    if (indiceGaleria > 0){ indiceGaleria--; mostrarFotoGaleria(); }
+  });
+  galeriaSiguiente.addEventListener("click", () => {
+    if (indiceGaleria < fotosGaleria.length - 1){ indiceGaleria++; mostrarFotoGaleria(); }
+  });
+  document.getElementById("cerrar-galeria").addEventListener("click", cerrarGaleria);
+  veloGaleria.addEventListener("click", cerrarGaleria);
+
+  document.addEventListener("keydown", e => {
+    if (!galeria.classList.contains("abierto")) return;
+    if (e.key === "Escape") cerrarGaleria();
+    if (e.key === "ArrowRight") galeriaSiguiente.click();
+    if (e.key === "ArrowLeft") galeriaAnterior.click();
+  });
 
   /* ---------- Encargo ---------- */
 
@@ -1914,7 +2228,7 @@ const ENCARGO = {
     bateria:   document.getElementById("a-bateria"),
     incluye:   document.getElementById("a-incluye"),
     garantia:  document.getElementById("a-garantia"),
-    foto:      document.getElementById("a-foto"),
+    fotos:     document.getElementById("a-fotos"),
     nota:      document.getElementById("a-nota"),
     estado:    document.getElementById("a-estado")
   };
@@ -1922,6 +2236,10 @@ const ENCARGO = {
   function comillas(t){
     // Escapa comillas dobles y barras para que el bloque generado sea válido
     return '"' + String(t).replace(/\\/g, "\\\\").replace(/"/g, '\\"') + '"';
+  }
+
+  function listaComillas(lista){
+    return "[" + lista.map(comillas).join(", ") + "]";
   }
 
   function bloqueCodigo(d){
@@ -1935,7 +2253,7 @@ const ENCARGO = {
       "    incluye: "   + comillas(d.incluye)   + ",\n" +
       "    garantia: "  + comillas(d.garantia)  + ",\n" +
       "    nota: "      + comillas(d.nota)      + ",\n" +
-      "    foto: "      + comillas(d.foto)      + ",\n" +
+      "    fotos: "     + listaComillas(d.fotos) + ",\n" +
       "    estado: "    + comillas(d.estado)    + "\n" +
       "  }";
   }
@@ -1967,7 +2285,7 @@ const ENCARGO = {
       incluye:   campos.incluye.value.trim()   || "Solo equipo",
       garantia:  campos.garantia.value.trim()  || "Sin garantía",
       nota:      campos.nota.value.trim(),
-      foto:      campos.foto.value.trim(),
+      fotos:     campos.fotos.value.split("\n").map(f => f.trim()).filter(Boolean),
       estado:    campos.estado.value
     };
 
