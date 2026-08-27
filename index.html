@@ -1847,9 +1847,29 @@ const ENCARGO = {
   window.addEventListener("scroll", alDesplazar, { passive: true });
   alDesplazar();
 
+  // Scroll propio, más lento y pausado que el "smooth" nativo del navegador.
+  function facilitarSalida(t){ return t === 1 ? 1 : 1 - Math.pow(2, -10 * t); }
+
+  function desplazarLento(elemento, duracion = 1400){
+    const altoCromoPx = cabecera.offsetHeight + filtros.offsetHeight;
+    const destino = elemento.getBoundingClientRect().top + window.scrollY - altoCromoPx;
+    const inicio = window.scrollY;
+    const distancia = destino - inicio;
+    const tiempoInicio = performance.now();
+
+    function paso(ahora){
+      const avance = Math.min((ahora - tiempoInicio) / duracion, 1);
+      window.scrollTo(0, inicio + distancia * facilitarSalida(avance));
+      if (avance < 1) requestAnimationFrame(paso);
+    }
+    requestAnimationFrame(paso);
+  }
+
   document.getElementById("ver-equipos").addEventListener("click", () => {
     const primera = rejilla.firstElementChild;
-    if (primera) primera.scrollIntoView({ behavior: sinMovimiento ? "auto" : "smooth", block: "start" });
+    if (!primera) return;
+    if (sinMovimiento) primera.scrollIntoView({ behavior: "auto", block: "start" });
+    else desplazarLento(primera);
   });
 
   document.getElementById("ir-encargo").addEventListener("click", () => {
