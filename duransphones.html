@@ -1687,6 +1687,7 @@ const ENCARGO = {
       <div class="salida">
         <h3>Base de datos (servidor)</h3>
         <p>Si tenés la API del día 17 corriendo en <code>http://127.0.0.1:8000</code>, lo que agregues arriba también se manda ahí — de verdad compartido, visible para cualquiera que abra el sitio con la API corriendo. Si no está corriendo, no pasa nada malo: se avisa acá abajo y el equipo se queda solo en este navegador.</p>
+        <p class="advertencia"><strong>Ojo:</strong> esto es tu catálogo real en tu compu, mientras la API está corriendo. El sitio publicado en internet (GitHub Pages) no se entera de estos cambios — sigue mostrando la versión fija hasta que actualices ese archivo a mano con el bloque de código de abajo.</p>
         <p class="aviso" id="aviso-servidor"></p>
         <div class="lista-servidor" id="lista-servidor"></div>
       </div>
@@ -2256,6 +2257,22 @@ const ENCARGO = {
     });
   }
 
+  // Traduce la respuesta de error de la API a un mensaje legible.
+  // 401: clave faltante/incorrecta · 409: nombre duplicado ·
+  // 422: la API rechazó algún dato (precio <= 0, grado inválido, etc.)
+  async function leerMensajeError(respuesta){
+    if (respuesta.status === 401){
+      return "La API rechazó la clave de administrador — volvé a entrar al panel.";
+    }
+    try{
+      const cuerpo = await respuesta.json();
+      const detalle = cuerpo.detail;
+      if (typeof detalle === "string") return detalle;
+      if (Array.isArray(detalle)) return detalle.map(d => d.msg).join(" · ");
+    }catch(err){ /* el cuerpo no era JSON, seguimos con el mensaje genérico */ }
+    return "La API respondió con error (" + respuesta.status + ").";
+  }
+
   listaServidor.addEventListener("click", async (e) => {
     const boton = e.target.closest("button[data-accion]");
     if (!boton) return;
@@ -2265,12 +2282,19 @@ const ENCARGO = {
       const respuesta = boton.dataset.accion === "vender"
         ? await fetch(URL_API + "/" + id, {
             method: "PATCH",
-            headers: { "Content-Type": "application/json" },
+            headers: { "Content-Type": "application/json", "X-Admin-Clave": claveAdminActual },
             body: JSON.stringify({ estado: "vendido" })
           })
-        : await fetch(URL_API + "/" + id, { method: "DELETE" });
+        : await fetch(URL_API + "/" + id, {
+            method: "DELETE",
+            headers: { "X-Admin-Clave": claveAdminActual }
+          });
 
-      if (!respuesta.ok) throw new Error("La API respondió con error.");
+      if (!respuesta.ok){
+        avisoServidor.style.color = "var(--ambar)";
+        avisoServidor.textContent = await leerMensajeError(respuesta);
+        return;
+      }
 
       avisoServidor.style.color = "var(--exito)";
       avisoServidor.textContent = boton.dataset.accion === "vender"
@@ -2287,10 +2311,15 @@ const ENCARGO = {
     try{
       const respuesta = await fetch(URL_API, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", "X-Admin-Clave": claveAdminActual },
         body: JSON.stringify(dispositivo)
       });
-      if (!respuesta.ok) throw new Error("La API respondió con error.");
+
+      if (!respuesta.ok){
+        avisoServidor.style.color = "var(--ambar)";
+        avisoServidor.textContent = await leerMensajeError(respuesta) + " (quedó guardado solo en este navegador.)";
+        return;
+      }
 
       avisoServidor.style.color = "var(--exito)";
       avisoServidor.textContent = "También se guardó en el servidor (base de datos compartida).";
@@ -2304,10 +2333,12 @@ const ENCARGO = {
   // Entrar
   const campoClave = document.getElementById("clave");
   const avisoClave = document.getElementById("aviso-clave");
+  let claveAdminActual = "";
 
   function intentarEntrar(){
     if (campoClave.value === ADMIN_CLAVE){
       dentro = true;
+      claveAdminActual = campoClave.value;
       acceso.hidden = true;
       alta.hidden = false;
       titulo.textContent = "Agregar dispositivo";
