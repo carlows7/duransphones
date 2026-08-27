@@ -984,6 +984,23 @@ const ENCARGO = {
   }
   .formulario.mostrado{ opacity: 1; transform: none; }
 
+  /* Cada campo entra por separado, en cascada, cuando se muestra el formulario */
+  .formulario > *{
+    opacity: 0;
+    transform: translateY(16px);
+    transition: opacity 1s var(--curva), transform 1s var(--curva);
+  }
+  .formulario.mostrado > *{ opacity: 1; transform: none; }
+  .formulario.mostrado > *:nth-child(1){ transition-delay: .1s; }
+  .formulario.mostrado > *:nth-child(2){ transition-delay: .18s; }
+  .formulario.mostrado > *:nth-child(3){ transition-delay: .26s; }
+  .formulario.mostrado > *:nth-child(4){ transition-delay: .34s; }
+  .formulario.mostrado > *:nth-child(5){ transition-delay: .42s; }
+  .formulario.mostrado > *:nth-child(6){ transition-delay: .5s; }
+  .formulario.mostrado > *:nth-child(7){ transition-delay: .58s; }
+  .formulario.mostrado > *:nth-child(8){ transition-delay: .66s; }
+  .formulario.mostrado > *:nth-child(9){ transition-delay: .74s; }
+
   .formulario h3{
     font-family: var(--display);
     font-weight: 600;
