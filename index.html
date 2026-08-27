@@ -2510,14 +2510,24 @@ const PAYPAL_USUARIO   = "CarlosDuranorellana"; // arma el link paypal.me/Carlos
       return;
     }
 
+    // Paso 1: confirmar antes de guardar. El diálogo nativo del
+    // navegador solo tiene "Aceptar"/"Cancelar" — si "Cancelar" no
+    // impidiera el guardado (como pasaba antes, cuando ya se guardaba
+    // primero y esto solo preguntaba "¿agregar otro?"), cancelar no
+    // cancelaría nada de verdad. Acá si cancela, no se guarda ni se
+    // borra lo escrito — se queda tal cual para seguir editando.
+    if (!confirm(`¿Guardar este pedido? ${modelo} · ${presupuesto.value} · ${condicion}`)){
+      return;
+    }
+
     carritoEncargos.push({ modelo, presupuesto: presupuesto.value, condicion, urgencia: urgencia.value });
     guardarCarritoEnStorage();
     pintarCarrito();
 
-    // El formulario se limpia siempre después de guardar (haya dicho
-    // "sí" o "no" a agregar otro) — si no, quedaba con los mismos
-    // datos escritos y un click de más en "Guardar pedido" volvía a
-    // guardar el mismo pedido duplicado.
+    // Paso 2: ya guardado de verdad, ahora sí preguntamos qué sigue.
+    // El formulario se limpia siempre en este punto (haya dicho "sí" o
+    // "no") — si no, quedaba con los mismos datos y un click de más en
+    // "Guardar pedido" volvía a guardar el mismo pedido duplicado.
     const otroMas = confirm("Pedido guardado. ¿Querés agregar otro pedido?");
     limpiarFormularioEncargo();
 
