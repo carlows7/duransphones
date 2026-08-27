@@ -1643,18 +1643,18 @@ const ENCARGO = {
     <div id="alta" hidden>
       <div class="campo">
         <label for="a-nombre">Nombre del equipo</label>
-        <input type="text" id="a-nombre" placeholder="iPhone 14 Pro">
+        <input type="text" id="a-nombre" placeholder="iPhone 14 Pro" maxlength="120">
       </div>
 
       <div class="campo">
         <label for="a-detalle">Detalle</label>
-        <input type="text" id="a-detalle" placeholder="256 GB · Morado">
+        <input type="text" id="a-detalle" placeholder="256 GB · Morado" maxlength="200">
       </div>
 
       <div class="dos-columnas">
         <div class="campo">
           <label for="a-categoria">Categoría</label>
-          <input type="text" id="a-categoria" placeholder="Teléfonos" list="lista-categorias">
+          <input type="text" id="a-categoria" placeholder="Teléfonos" list="lista-categorias" maxlength="60">
           <datalist id="lista-categorias"></datalist>
         </div>
         <div class="campo">
@@ -1681,11 +1681,11 @@ const ENCARGO = {
       <div class="dos-columnas">
         <div class="campo">
           <label for="a-incluye">Incluye</label>
-          <input type="text" id="a-incluye" placeholder="Caja y cable">
+          <input type="text" id="a-incluye" placeholder="Caja y cable" maxlength="200">
         </div>
         <div class="campo">
           <label for="a-garantia">Garantía</label>
-          <input type="text" id="a-garantia" placeholder="30 días">
+          <input type="text" id="a-garantia" placeholder="30 días" maxlength="60">
         </div>
       </div>
 
@@ -1696,7 +1696,7 @@ const ENCARGO = {
 
       <div class="campo">
         <label for="a-nota">Nota honesta</label>
-        <textarea id="a-nota" placeholder="Rayón en el borde inferior. Pantalla impecable."></textarea>
+        <textarea id="a-nota" placeholder="Rayón en el borde inferior. Pantalla impecable." maxlength="500"></textarea>
       </div>
 
       <div class="campo">
@@ -2331,15 +2331,25 @@ const ENCARGO = {
       const cuerpo = await respuesta.json();
       const detalle = cuerpo.detail;
       if (typeof detalle === "string") return detalle;
-      if (Array.isArray(detalle)) return detalle.map(d => d.msg).join(" · ");
+      // La API (día 19) ya devuelve una lista de mensajes limpios,
+      // listos para mostrar — no objetos con .msg como antes.
+      if (Array.isArray(detalle)) return detalle.join(" · ");
     }catch(err){ /* el cuerpo no era JSON, seguimos con el mensaje genérico */ }
     return "La API respondió con error (" + respuesta.status + ").";
   }
 
+  // Evita doble clic: mientras una acción del listado está en curso, se
+  // ignoran nuevos clics (en vez de mandar dos PATCH/DELETE seguidos).
+  let procesandoAccionServidor = false;
+
   listaServidor.addEventListener("click", async (e) => {
     const boton = e.target.closest("button[data-accion]");
-    if (!boton) return;
+    if (!boton || procesandoAccionServidor) return;
     const id = boton.dataset.id;
+
+    procesandoAccionServidor = true;
+    const botonesFila = [...listaServidor.querySelectorAll("button")];
+    botonesFila.forEach(b => b.disabled = true);
 
     try{
       const respuesta = boton.dataset.accion === "vender"
@@ -2367,10 +2377,18 @@ const ENCARGO = {
     }catch(err){
       avisoServidor.style.color = "var(--ambar)";
       avisoServidor.textContent = "No se pudo conectar con el servidor — ¿está corriendo la API en 127.0.0.1:8000?";
+    }finally{
+      procesandoAccionServidor = false;
+      // pintarListaServidor() (llamada dentro de intentarCargarDesdeAPI
+      // si hubo éxito) ya redibuja los botones habilitados; si falló,
+      // hay que reactivar a mano los que seguían en el DOM.
+      botonesFila.forEach(b => { if (b.isConnected) b.disabled = false; });
     }
   });
 
   async function intentarAgregarEnServidor(dispositivo){
+    const botonAgregar = document.getElementById("agregar");
+    botonAgregar.disabled = true;
     try{
       const respuesta = await fetch(URL_API, {
         method: "POST",
@@ -2390,6 +2408,8 @@ const ENCARGO = {
     }catch(err){
       avisoServidor.style.color = "var(--ambar)";
       avisoServidor.textContent = "No se pudo conectar con el servidor — ¿está corriendo la API en 127.0.0.1:8000? Por ahora el equipo solo quedó guardado en este navegador.";
+    }finally{
+      botonAgregar.disabled = false;
     }
   }
 
