@@ -1112,6 +1112,7 @@ const ENCARGO = {
   .pie{
     border-top: 1px solid var(--borde);
     padding-block: 2.6rem;
+    scroll-snap-align: end;
   }
   .pie-fila{
     display: flex;
@@ -1567,6 +1568,13 @@ const ENCARGO = {
         <p>Efectivo o transferencia. Te queda el comprobante con el IMEI y los días de garantía.</p>
       </div>
     </div>
+
+    <div class="proceso-cta revelar" data-retraso="3">
+      <button type="button" class="boton boton-final" id="ver-equipos-proceso">
+        <svg class="icono-boton" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        Ver equipos disponibles
+      </button>
+    </div>
   </div>
 </section>
 
@@ -1819,10 +1827,13 @@ const ENCARGO = {
   window.addEventListener("scroll", alDesplazar, { passive: true });
   alDesplazar();
 
-  document.getElementById("ver-equipos").addEventListener("click", () => {
+  function irAlCatalogo(){
     const primera = rejilla.firstElementChild;
     if (primera) primera.scrollIntoView({ behavior: sinMovimiento ? "auto" : "smooth", block: "start" });
-  });
+  }
+
+  document.getElementById("ver-equipos").addEventListener("click", irAlCatalogo);
+  document.getElementById("ver-equipos-proceso").addEventListener("click", irAlCatalogo);
 
   document.getElementById("ir-encargo").addEventListener("click", () => {
     document.getElementById("encargos").scrollIntoView({ behavior: sinMovimiento ? "auto" : "smooth", block: "start" });
