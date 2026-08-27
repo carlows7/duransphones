@@ -1077,10 +1077,19 @@ const ENCARGO = {
   .proceso h2{
     font-family: var(--display);
     font-weight: 700;
-    font-size: clamp(1.6rem, 3.8vw, 2.4rem);
+    font-size: clamp(1.9rem, 4.2vw, 2.7rem);
     letter-spacing: -.035em;
-    margin: 0 0 2.2rem;
+    margin: .5rem 0 2.4rem;
     color: var(--tinta);
+  }
+  .proceso h2 em{
+    font-family: var(--acento-serif);
+    font-style: italic;
+    font-weight: 600;
+    background: linear-gradient(100deg, var(--oro-alto), var(--bronce));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
   }
   .pasos{
     display: grid;
@@ -1550,7 +1559,8 @@ const ENCARGO = {
 
 <section class="proceso">
   <div class="envoltura">
-    <h2 class="revelar">Cómo se compra</h2>
+    <span class="etiqueta revelar">Proceso simple</span>
+    <h2 class="revelar" data-retraso="1">Así de fácil <em>se compra</em></h2>
     <div class="pasos">
       <div class="paso revelar">
         <span class="paso-num">PASO 01</span>
@@ -1567,13 +1577,6 @@ const ENCARGO = {
         <h3>Pagas si te convence</h3>
         <p>Efectivo o transferencia. Te queda el comprobante con el IMEI y los días de garantía.</p>
       </div>
-    </div>
-
-    <div class="proceso-cta revelar" data-retraso="3">
-      <button type="button" class="boton boton-final" id="ver-equipos-proceso">
-        <svg class="icono-boton" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-        Ver equipos disponibles
-      </button>
     </div>
   </div>
 </section>
@@ -1827,13 +1830,10 @@ const ENCARGO = {
   window.addEventListener("scroll", alDesplazar, { passive: true });
   alDesplazar();
 
-  function irAlCatalogo(){
+  document.getElementById("ver-equipos").addEventListener("click", () => {
     const primera = rejilla.firstElementChild;
     if (primera) primera.scrollIntoView({ behavior: sinMovimiento ? "auto" : "smooth", block: "start" });
-  }
-
-  document.getElementById("ver-equipos").addEventListener("click", irAlCatalogo);
-  document.getElementById("ver-equipos-proceso").addEventListener("click", irAlCatalogo);
+  });
 
   document.getElementById("ir-encargo").addEventListener("click", () => {
     document.getElementById("encargos").scrollIntoView({ behavior: sinMovimiento ? "auto" : "smooth", block: "start" });
