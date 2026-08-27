@@ -231,6 +231,7 @@ const ENCARGO = {
     background: linear-gradient(180deg, var(--oro-alto), var(--oro));
     color: #1A1408;
     text-decoration: none;
+    white-space: nowrap;
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -1427,6 +1428,8 @@ const ENCARGO = {
     .encargos-caja{ grid-template-columns: 1fr; }
   }
 
+  .texto-corto{ display: none; }
+
   @media (max-width: 640px){
     .promesas{ grid-template-columns: 1fr; }
     .promesa{ border-left: 0; border-top: 1px solid var(--borde); padding: 1.25rem 0; }
@@ -1434,6 +1437,11 @@ const ENCARGO = {
     .filtros{ top: 58px; }
     .buscador{ margin-left: 0; width: 100%; }
     .enlace-menu{ display: none; }
+    /* "Escribir por WhatsApp" no entra en una línea en pantallas
+       angostas y la píldora se parte en dos, tapando lo de abajo —
+       en mobile se muestra solo "WhatsApp". */
+    #wa-cabecera .texto-completo{ display: none; }
+    #wa-cabecera .texto-corto{ display: inline; }
   }
 
   /* ================= Sin movimiento ================= */
@@ -1454,7 +1462,10 @@ const ENCARGO = {
     <div class="marca"><span class="led"></span><span id="marca-nombre">Duran'sPhones</span></div>
     <div class="acciones-cabecera">
       <button type="button" class="enlace-menu" id="ir-encargo">Pedidos por encargo</button>
-      <a class="boton" id="wa-cabecera" href="#" target="_blank" rel="noopener">Escribir por WhatsApp</a>
+      <a class="boton" id="wa-cabecera" href="#" target="_blank" rel="noopener">
+        <span class="texto-completo">Escribir por WhatsApp</span>
+        <span class="texto-corto">WhatsApp</span>
+      </a>
     </div>
   </div>
 </header>
