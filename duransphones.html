@@ -1247,6 +1247,22 @@ const ENCARGO = {
   }
   .advertencia strong{ color: var(--ambar); }
 
+  .lista-servidor{ display: grid; gap: .5rem; }
+  .fila-servidor{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: .6rem;
+    padding: .55rem .7rem;
+    border: 1px solid var(--borde);
+    border-radius: 10px;
+    background: var(--fondo);
+    font-size: .82rem;
+  }
+  .fila-servidor-botones{ display: flex; gap: .4rem; flex: none; }
+  .boton-chico{ padding: .4rem .7rem; font-size: .74rem; }
+  .boton-chico:disabled{ opacity: .45; cursor: default; pointer-events: none; }
+
   .cinta-admin{
     position: fixed;
     left: 0; right: 0; bottom: 0;
@@ -1667,6 +1683,13 @@ const ENCARGO = {
           <button type="button" class="boton fantasma" id="copiar">Copiar código</button>
         </div>
       </div>
+
+      <div class="salida">
+        <h3>Base de datos (servidor)</h3>
+        <p>Si tenés la API del día 17 corriendo en <code>http://127.0.0.1:8000</code>, lo que agregues arriba también se manda ahí — de verdad compartido, visible para cualquiera que abra el sitio con la API corriendo. Si no está corriendo, no pasa nada malo: se avisa acá abajo y el equipo se queda solo en este navegador.</p>
+        <p class="aviso" id="aviso-servidor"></p>
+        <div class="lista-servidor" id="lista-servidor"></div>
+      </div>
     </div>
 
   </div>
@@ -1982,6 +2005,7 @@ const ENCARGO = {
       reconstruirFiltros();
       refrescarCategorias();
       pintar();
+      pintarListaServidor();
     }catch(err){
       // Sin API disponible: se queda con el catálogo fijo de DISPOSITIVOS.
     }
@@ -2175,6 +2199,8 @@ const ENCARGO = {
   const titulo  = document.getElementById("panel-titulo");
   const codigo  = document.getElementById("codigo");
   const avisoAlta = document.getElementById("aviso-alta");
+  const avisoServidor = document.getElementById("aviso-servidor");
+  const listaServidor = document.getElementById("lista-servidor");
 
   let dentro = false;
 
@@ -2183,6 +2209,7 @@ const ENCARGO = {
     velo.classList.add("abierto");
     panel.setAttribute("aria-hidden", "false");
     (dentro ? document.getElementById("a-nombre") : document.getElementById("clave")).focus();
+    pintarListaServidor();
   }
 
   function cerrarPanel(){
@@ -2205,6 +2232,74 @@ const ENCARGO = {
   }
   window.addEventListener("hashchange", revisarDireccion);
   revisarDireccion();
+
+  // ---------- Panel: base de datos (servidor), día 18 ----------
+
+  function pintarListaServidor(){
+    listaServidor.innerHTML = "";
+
+    if (!dispositivosRemotos || dispositivosRemotos.length === 0){
+      listaServidor.innerHTML = '<p class="letra-chica">Sin datos del servidor todavía — ¿está corriendo la API en 127.0.0.1:8000?</p>';
+      return;
+    }
+
+    dispositivosRemotos.forEach(d => {
+      const fila = document.createElement("div");
+      fila.className = "fila-servidor";
+      fila.innerHTML = `
+        <span>${escapar(d.nombre)}${d.estado === "vendido" ? " · vendido" : ""}</span>
+        <span class="fila-servidor-botones">
+          <button type="button" class="boton fantasma boton-chico" data-accion="vender" data-id="${d.id}"${d.estado === "vendido" ? " disabled" : ""}>Marcar vendido</button>
+          <button type="button" class="boton fantasma boton-chico" data-accion="eliminar" data-id="${d.id}">Eliminar</button>
+        </span>`;
+      listaServidor.appendChild(fila);
+    });
+  }
+
+  listaServidor.addEventListener("click", async (e) => {
+    const boton = e.target.closest("button[data-accion]");
+    if (!boton) return;
+    const id = boton.dataset.id;
+
+    try{
+      const respuesta = boton.dataset.accion === "vender"
+        ? await fetch(URL_API + "/" + id, {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ estado: "vendido" })
+          })
+        : await fetch(URL_API + "/" + id, { method: "DELETE" });
+
+      if (!respuesta.ok) throw new Error("La API respondió con error.");
+
+      avisoServidor.style.color = "var(--exito)";
+      avisoServidor.textContent = boton.dataset.accion === "vender"
+        ? "Marcado como vendido en el servidor."
+        : "Eliminado del servidor.";
+      await intentarCargarDesdeAPI();
+    }catch(err){
+      avisoServidor.style.color = "var(--ambar)";
+      avisoServidor.textContent = "No se pudo conectar con el servidor — ¿está corriendo la API en 127.0.0.1:8000?";
+    }
+  });
+
+  async function intentarAgregarEnServidor(dispositivo){
+    try{
+      const respuesta = await fetch(URL_API, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(dispositivo)
+      });
+      if (!respuesta.ok) throw new Error("La API respondió con error.");
+
+      avisoServidor.style.color = "var(--exito)";
+      avisoServidor.textContent = "También se guardó en el servidor (base de datos compartida).";
+      await intentarCargarDesdeAPI();
+    }catch(err){
+      avisoServidor.style.color = "var(--ambar)";
+      avisoServidor.textContent = "No se pudo conectar con el servidor — ¿está corriendo la API en 127.0.0.1:8000? Por ahora el equipo solo quedó guardado en este navegador.";
+    }
+  }
 
   // Entrar
   const campoClave = document.getElementById("clave");
@@ -2329,7 +2424,10 @@ const ENCARGO = {
       ? "Agregado y guardado en este navegador."
       : "Agregado, pero no se pudo guardar en este navegador (¿modo privado o almacenamiento bloqueado?). Se perderá al recargar salvo que copies el código de abajo.";
 
-    cerrarPanel();
+    intentarAgregarEnServidor(nuevo);
+
+    // No cerramos el panel automáticamente: el aviso de arriba (servidor)
+    // llega async, y si cerráramos ya no se alcanzaría a ver.
     rejilla.firstElementChild.scrollIntoView({ behavior: sinMovimiento ? "auto" : "smooth", block: "start" });
   });
 
