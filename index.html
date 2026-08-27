@@ -281,6 +281,35 @@ const PAYPAL_USUARIO   = "CarlosDuranorellana"; // arma el link paypal.me/Carlos
     border-bottom-width: 1px;
   }
 
+  /* Botones del carrito: más resorte al hover/click que un .boton normal */
+  .boton-vivo{
+    transition: transform .4s var(--curva-rebote), box-shadow .3s var(--curva-corta),
+                background .3s var(--curva-corta), border-color .3s var(--curva-corta),
+                color .3s var(--curva-corta) !important;
+  }
+  .boton-vivo:hover{ transform: translateY(-3px) scale(1.035); }
+  .boton-vivo:active{ transform: translateY(1px) scale(.97); }
+
+  .boton-eliminar:hover{
+    background: rgba(226,87,76,.14);
+    color: var(--rojo);
+    border-color: var(--rojo);
+  }
+
+  .boton-paypal{
+    background: transparent;
+    color: #4695D8;
+    border-color: #4695D8;
+    border-bottom-color: #2E6CA8;
+    box-shadow: none;
+  }
+  .boton-paypal:hover{
+    background: rgba(70,149,216,.12);
+    color: #6FB1EA;
+    border-color: #6FB1EA;
+    box-shadow: 0 8px 20px -10px rgba(70,149,216,.6);
+  }
+
   .boton-final{
     font-size: 1rem;
     padding: 1.05rem 2.2rem;
@@ -1346,6 +1375,12 @@ const PAYPAL_USUARIO   = "CarlosDuranorellana"; // arma el link paypal.me/Carlos
     font-size: .82rem;
   }
   .fila-servidor-botones{ display: flex; gap: .4rem; flex: none; }
+  .fila-entrada{
+    opacity: 0;
+    transform: translateY(10px) scale(.97);
+    transition: opacity .5s var(--curva), transform .5s var(--curva-rebote);
+  }
+  .fila-entrada.fila-mostrada{ opacity: 1; transform: none; }
   .boton-chico{ padding: .4rem .7rem; font-size: .74rem; }
   .boton-chico:disabled{ opacity: .45; cursor: default; pointer-events: none; }
 
@@ -1819,7 +1854,10 @@ const PAYPAL_USUARIO   = "CarlosDuranorellana"; // arma el link paypal.me/Carlos
     <div class="lista-servidor" id="lista-carrito"></div>
 
     <div class="panel-acciones">
-      <button type="button" class="boton fantasma" id="agregar-otro-pedido">Agregar otro pedido</button>
+      <button type="button" class="boton fantasma boton-vivo" id="agregar-otro-pedido">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Agregar otro pedido
+      </button>
     </div>
 
     <div class="salida">
@@ -1838,14 +1876,20 @@ const PAYPAL_USUARIO   = "CarlosDuranorellana"; // arma el link paypal.me/Carlos
       </dl>
 
       <div class="panel-acciones">
-        <a class="boton fantasma" id="link-paypal" href="#" target="_blank" rel="noopener">Pagar con PayPal</a>
+        <a class="boton boton-paypal boton-vivo" id="link-paypal" href="#" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" width="17" height="17" fill="currentColor" aria-hidden="true"><path d="M7.5 20.5 9 4h6.7c2.6 0 4.4 1.7 4 4.3-.5 3.4-3 5.4-6.3 5.4h-2.8l-.9 6.8H7.5zm3.9-9.1h2.3c1.7 0 2.9-.9 3.1-2.6.2-1.4-.6-2.2-2-2.2h-2.4l-1 4.8z"/></svg>
+          Pagar con PayPal
+        </a>
       </div>
 
       <p class="letra-chica">Mandá el comprobante de la transferencia o del pago por PayPal junto con tu pedido por WhatsApp.</p>
     </div>
 
     <div class="panel-acciones">
-      <button type="button" class="boton" id="enviar-carrito">Enviar pedido(s) por WhatsApp</button>
+      <button type="button" class="boton boton-vivo" id="enviar-carrito">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M12 2C6.48 2 2 6.48 2 12c0 1.85.5 3.58 1.35 5.05L2 22l5.05-1.35C8.52 21.5 10.24 22 12 22c5.52 0 10-4.48 10-10S17.52 2 12 2zm5.2 14.3c-.22.62-1.28 1.16-1.76 1.2-.46.05-.94.24-3.14-.66-2.66-1.1-4.38-3.82-4.51-4-.13-.18-1.06-1.41-1.06-2.69 0-1.28.67-1.9.9-2.16.23-.26.5-.32.67-.32.17 0 .34 0 .48.01.16.01.36-.06.56.43.21.5.7 1.75.77 1.88.06.13.1.28.02.46-.08.18-.13.29-.25.45-.13.16-.27.35-.38.47-.13.13-.26.27-.11.53.15.26.65 1.07 1.4 1.73.96.85 1.77 1.11 2.03 1.24.26.13.41.11.56-.06.16-.18.65-.76.83-1.02.18-.26.35-.21.6-.13.24.09 1.53.72 1.79.85.26.13.44.19.5.3.06.11.06.62-.15 1.23z"/></svg>
+        Enviar pedido(s) por WhatsApp
+      </button>
     </div>
   </div>
 </aside>
@@ -2421,13 +2465,18 @@ const PAYPAL_USUARIO   = "CarlosDuranorellana"; // arma el link paypal.me/Carlos
 
     carritoEncargos.forEach((pedido, indice) => {
       const fila = document.createElement("div");
-      fila.className = "fila-servidor";
+      fila.className = "fila-servidor fila-entrada";
+      fila.style.transitionDelay = (indice * 0.07) + "s";
       fila.innerHTML = `
         <span>${escapar(pedido.modelo)} · ${escapar(pedido.presupuesto)} · ${escapar(pedido.condicion)}</span>
         <span class="fila-servidor-botones">
-          <button type="button" class="boton fantasma boton-chico" data-eliminar="${indice}">Eliminar</button>
+          <button type="button" class="boton fantasma boton-chico boton-vivo boton-eliminar" data-eliminar="${indice}">Eliminar</button>
         </span>`;
       listaCarrito.appendChild(fila);
+      // Fuerza el reflow para que la transición arranque desde el
+      // estado oculto en vez de aparecer ya visible de una.
+      fila.offsetHeight;
+      fila.classList.add("fila-mostrada");
     });
   }
 
