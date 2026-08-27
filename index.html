@@ -539,6 +539,7 @@ const ENCARGO = {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
+    justify-content: center;
     gap: .5rem;
   }
 
@@ -561,9 +562,10 @@ const ENCARGO = {
     color: var(--tinta-baja);
     cursor: pointer;
     transition: color .25s var(--curva-corta), border-color .25s var(--curva-corta),
-                background .25s var(--curva-corta), transform .2s var(--curva-corta);
+                background .3s var(--curva-corta), transform .4s var(--curva-rebote);
   }
-  .chip:hover{ color: var(--tinta); border-color: var(--tinta-tenue); transform: translateY(-1px); }
+  .chip:hover{ color: var(--tinta); border-color: var(--tinta-tenue); transform: translateY(-2px) scale(1.05); }
+  .chip:active{ transform: translateY(0) scale(.95); }
   .chip[aria-pressed="true"]{
     background: linear-gradient(180deg, var(--oro-alto), var(--oro));
     border-color: var(--oro);
@@ -571,7 +573,6 @@ const ENCARGO = {
   }
 
   .buscador{
-    margin-left: auto;
     font-family: var(--cuerpo);
     font-size: .9rem;
     padding: .55rem .9rem .55rem 2.35rem;
