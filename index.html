@@ -2032,7 +2032,29 @@ const PAYPAL_USUARIO   = "CarlosDuranorellana"; // arma el link paypal.me/Carlos
         if (queBusco && queBusco.value.trim() !== ""){
           limpiarFormularioEncargo();
         }
+
+        // pintar() puede cambiar drásticamente la altura de la grilla
+        // (de 6 dispositivos a 1, por ejemplo) — si el catálogo se
+        // achica mucho, la página entera queda más corta que la
+        // posición de scroll donde estaba el usuario, y el navegador
+        // NO tiene otra opción que moverlo para arriba (no hay nada
+        // más abajo a lo que quedarse). Guardar un número de píxeles
+        // no alcanza porque ese número deja de tener sentido.
+        //
+        // La solución es anclarse a la sección donde está el usuario
+        // (encargos, proceso, portada, pie), no a un píxel: esas
+        // secciones no cambian de tamaño cuando se filtra el catálogo,
+        // así que volver a hacerles scroll después de pintar() los deja
+        // exactamente donde estaban, sin importar cuánto se achicó la
+        // grilla de dispositivos.
+        const centro = document.elementFromPoint(window.innerWidth / 2, window.innerHeight / 2);
+        const seccionAncla = centro ? centro.closest(".encargos, .proceso, .portada, footer.pie") : null;
+
         pintar();
+
+        if (seccionAncla && document.contains(seccionAncla)){
+          seccionAncla.scrollIntoView({ behavior: "auto", block: "start" });
+        }
       });
       chips.insertBefore(b, buscador);
     });
