@@ -1965,6 +1965,30 @@ const ENCARGO = {
   pintar();
   actualizarAltoCromo();
 
+  /* ---------- Catálogo desde la API (día 17) ---------- */
+  /* Si hay una API corriendo en localhost, se usa su catálogo en vez del
+     fijo de arriba. Si falla (por ejemplo, en la versión publicada en
+     GitHub Pages, que no tiene backend), el sitio se queda como estaba. */
+
+  const URL_API = "http://127.0.0.1:8000/dispositivos";
+  let dispositivosRemotos = null;
+
+  async function intentarCargarDesdeAPI(){
+    try{
+      const respuesta = await fetch(URL_API);
+      if (!respuesta.ok) return;
+      dispositivosRemotos = await respuesta.json();
+      catalogo = extras.concat(dispositivosRemotos);
+      reconstruirFiltros();
+      refrescarCategorias();
+      pintar();
+    }catch(err){
+      // Sin API disponible: se queda con el catálogo fijo de DISPOSITIVOS.
+    }
+  }
+
+  intentarCargarDesdeAPI();
+
   /* ---------- Parallax de las formas flotantes de la portada ---------- */
 
   if (!sinMovimiento){
