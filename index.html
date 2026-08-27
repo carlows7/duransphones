@@ -1489,6 +1489,12 @@ const PAYPAL_USUARIO   = "CarlosDuranorellana"; // arma el link paypal.me/Carlos
        en mobile se muestra solo "WhatsApp". */
     #wa-cabecera .texto-completo{ display: none; }
     #wa-cabecera .texto-corto{ display: inline; }
+    /* En celular el bloque de "Cómo se compra" queda centrado en vez
+       de pegado a la izquierda, para que se vea más equilibrado en
+       una pantalla angosta. */
+    .proceso .etiqueta, .proceso h2, .proceso .paso{ text-align: center; }
+    .proceso .etiqueta{ justify-content: center; width: 100%; }
+    .pasos{ justify-items: center; }
   }
 
   /* ================= Sin movimiento ================= */
@@ -2481,10 +2487,16 @@ const PAYPAL_USUARIO   = "CarlosDuranorellana"; // arma el link paypal.me/Carlos
     guardarCarritoEnStorage();
     pintarCarrito();
 
+    // El formulario se limpia siempre después de guardar (haya dicho
+    // "sí" o "no" a agregar otro) — si no, quedaba con los mismos
+    // datos escritos y un click de más en "Guardar pedido" volvía a
+    // guardar el mismo pedido duplicado.
+    const otroMas = confirm("Pedido guardado. ¿Querés agregar otro pedido?");
+    limpiarFormularioEncargo();
+
     // No scrollea a ningún lado al limpiar — el formulario se queda
     // donde está, listo para el siguiente pedido si el usuario dice que sí.
-    if (confirm("Pedido guardado. ¿Querés agregar otro pedido?")){
-      limpiarFormularioEncargo();
+    if (otroMas){
       queBusco.focus();
     } else {
       abrirCarrito();
