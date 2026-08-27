@@ -2027,6 +2027,12 @@ const PAYPAL_USUARIO   = "CarlosDuranorellana"; // arma el link paypal.me/Carlos
         [...chips.querySelectorAll(".chip")].forEach(c =>
           c.setAttribute("aria-pressed", String(c.textContent === cat))
         );
+        // Si el usuario tenía algo escrito en "Arma tu encargo" sin
+        // guardar y se pone a mirar otra categoría del catálogo, se
+        // interpreta como que cambió de opinión — se limpia el campo.
+        if (queBusco && queBusco.value.trim() !== ""){
+          limpiarFormularioEncargo();
+        }
         pintar();
       });
       chips.insertBefore(b, buscador);
@@ -2494,12 +2500,19 @@ const PAYPAL_USUARIO   = "CarlosDuranorellana"; // arma el link paypal.me/Carlos
     const otroMas = confirm("Pedido guardado. ¿Querés agregar otro pedido?");
     limpiarFormularioEncargo();
 
-    // No scrollea a ningún lado al limpiar — el formulario se queda
-    // donde está, listo para el siguiente pedido si el usuario dice que sí.
+    // "Sí": no scrollea a ningún lado, el formulario se queda donde
+    // está, listo para el siguiente pedido.
+    // "No": vuelve al inicio de la página (portada). Tanto
+    // window.scrollTo(0) como scrollIntoView con behavior:"smooth" se
+    // traban contra el scroll-snap del sitio (mismo problema del día 18)
+    // — se usa desplazarLento(), la función propia que ya resuelve esto
+    // para el botón "Ver equipos disponibles".
     if (otroMas){
       queBusco.focus();
+    } else if (sinMovimiento){
+      document.querySelector(".portada").scrollIntoView({ behavior: "auto", block: "start" });
     } else {
-      abrirCarrito();
+      desplazarLento(document.querySelector(".portada"));
     }
   });
 
