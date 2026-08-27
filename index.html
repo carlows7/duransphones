@@ -549,13 +549,26 @@ const PAYPAL_USUARIO   = "CarlosDuranorellana"; // arma el link paypal.me/Carlos
 
   .promesa-clave{
     font-family: var(--dato);
-    font-size: .68rem;
-    font-weight: 600;
-    letter-spacing: .12em;
+    font-size: .72rem;
+    font-weight: 700;
+    letter-spacing: .16em;
     text-transform: uppercase;
-    color: var(--oro);
-    display: block;
-    margin-bottom: .5rem;
+    background: linear-gradient(100deg, var(--oro-alto) 4%, var(--oro) 55%, var(--bronce) 96%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+    margin-bottom: .65rem;
+  }
+  .promesa-clave::before{
+    content: "";
+    width: 6px; height: 6px;
+    flex: none;
+    border-radius: 50%;
+    background: var(--oro);
+    box-shadow: 0 0 8px 1px var(--oro-tenue);
   }
   .promesa-valor{
     font-family: var(--display);
