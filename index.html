@@ -143,6 +143,15 @@ const ENCARGO = {
   entrega:   "5 a 10 días"
 };
 
+// 7) DATOS PARA COBRAR EL ANTICIPO
+//    Se muestran tal cual en el carrito de pedidos. Nada de esto pasa
+//    por el sitio como pago real — son solo los datos para que el
+//    cliente transfiera o pague por PayPal, y mande el comprobante por
+//    WhatsApp junto con su pedido.
+const CUENTA_AGRICOLA  = "3281289053";          // Banco Agrícola, cuenta de ahorro
+const CUENTA_CUSCATLAN = "401495004118878";     // Banco Cuscatlán, cuenta de ahorro
+const PAYPAL_USUARIO   = "CarlosDuranorellana"; // arma el link paypal.me/CarlosDuranorellana
+
 </script>
 <!--
 ==========================================================================
@@ -354,6 +363,36 @@ const ENCARGO = {
   }
   .enlace-menu:hover{ color: var(--tinta); }
   .enlace-menu:hover::after{ right: 0; }
+
+  .boton-carrito{
+    position: relative;
+    width: 38px; height: 38px;
+    border-radius: 999px;
+    border: 1px solid var(--borde-fuerte);
+    background: var(--superficie);
+    color: var(--tinta-baja);
+    display: grid;
+    place-items: center;
+    cursor: pointer;
+    transition: color .25s var(--curva-corta), border-color .25s var(--curva-corta), transform .3s var(--curva-rebote);
+  }
+  .boton-carrito:hover{ color: var(--oro); border-color: var(--oro); transform: translateY(-1px); }
+  .contador-carrito{
+    position: absolute;
+    top: -6px; right: -6px;
+    min-width: 18px; height: 18px;
+    padding: 0 4px;
+    border-radius: 999px;
+    background: linear-gradient(180deg, var(--oro-alto), var(--oro));
+    color: #1A1408;
+    font-family: var(--dato);
+    font-size: .68rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+  }
 
   .led{
     width: 22px; height: 22px;
@@ -796,6 +835,14 @@ const ENCARGO = {
     margin: 1.1rem 0 0;
     padding-top: 1.1rem;
     border-top: 1px solid var(--borde);
+    font-family: var(--dato);
+    font-size: .74rem;
+  }
+  .datos-pago{
+    display: flex;
+    flex-wrap: wrap;
+    gap: .5rem;
+    margin: 0 0 1rem;
     font-family: var(--dato);
     font-size: .74rem;
   }
@@ -1462,6 +1509,10 @@ const ENCARGO = {
     <div class="marca"><span class="led"></span><span id="marca-nombre">Duran'sPhones</span></div>
     <div class="acciones-cabecera">
       <button type="button" class="enlace-menu" id="ir-encargo">Pedidos por encargo</button>
+      <button type="button" class="boton-carrito" id="abrir-carrito" aria-label="Ver carrito de pedidos">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+        <span class="contador-carrito" id="contador-carrito" hidden>0</span>
+      </button>
       <a class="boton" id="wa-cabecera" href="#" target="_blank" rel="noopener">
         <span class="texto-completo">Escribir por WhatsApp</span>
         <span class="texto-corto">WhatsApp</span>
@@ -1577,8 +1628,8 @@ const ENCARGO = {
 
           <p class="aviso" id="aviso"></p>
 
-          <button type="button" class="boton boton-encargo" id="enviar-encargo">Enviar encargo por WhatsApp</button>
-          <p class="letra-chica">No cobramos nada por buscar. El anticipo solo se pide cuando aceptas el equipo y el precio.</p>
+          <button type="button" class="boton boton-encargo" id="enviar-encargo">Guardar pedido</button>
+          <p class="letra-chica">Guardá tu pedido en el carrito — podés armar varios antes de mandarlos todos juntos por WhatsApp. No cobramos nada por buscar; el anticipo solo se pide cuando aceptas el equipo y el precio.</p>
         </div>
       </div>
 
@@ -1750,6 +1801,50 @@ const ENCARGO = {
   </div>
 </aside>
 
+<!-- ============ Carrito de pedidos ============ -->
+
+<div class="velo" id="velo-carrito"></div>
+<aside class="panel" id="panel-carrito" aria-hidden="true" aria-label="Carrito de pedidos">
+  <div class="panel-cabecera">
+    <h2>Tu carrito de pedidos</h2>
+    <button class="cerrar" id="cerrar-carrito" aria-label="Cerrar carrito">&times;</button>
+  </div>
+
+  <div class="panel-cuerpo">
+    <div class="lista-servidor" id="lista-carrito"></div>
+
+    <div class="panel-acciones">
+      <button type="button" class="boton fantasma" id="agregar-otro-pedido">Agregar otro pedido</button>
+    </div>
+
+    <div class="salida">
+      <h3>Pagar el anticipo</h3>
+      <p id="texto-anticipo-carrito"></p>
+
+      <dl class="datos-pago">
+        <div class="renglon">
+          <dt>Banco Agrícola</dt>
+          <dd id="dato-agricola"></dd>
+        </div>
+        <div class="renglon">
+          <dt>Banco Cuscatlán</dt>
+          <dd id="dato-cuscatlan"></dd>
+        </div>
+      </dl>
+
+      <div class="panel-acciones">
+        <a class="boton fantasma" id="link-paypal" href="#" target="_blank" rel="noopener">Pagar con PayPal</a>
+      </div>
+
+      <p class="letra-chica">Mandá el comprobante de la transferencia o del pago por PayPal junto con tu pedido por WhatsApp.</p>
+    </div>
+
+    <div class="panel-acciones">
+      <button type="button" class="boton" id="enviar-carrito">Enviar pedido(s) por WhatsApp</button>
+    </div>
+  </div>
+</aside>
+
 <div class="cinta-admin" id="cinta">
   <span>Modo administrador · los equipos nuevos se guardan en este navegador · pegá el código para que otros los vean</span>
   <button type="button" id="abrir-desde-cinta">Abrir panel</button>
@@ -1824,6 +1919,12 @@ const ENCARGO = {
   document.getElementById("regla-respuesta").textContent = ENCARGO.respuesta;
   document.getElementById("regla-anticipo").textContent  = ENCARGO.anticipo;
   document.getElementById("regla-entrega").textContent   = ENCARGO.entrega;
+
+  document.getElementById("texto-anticipo-carrito").textContent =
+    "Anticipo: " + ENCARGO.anticipo + " del total acordado, por transferencia o PayPal.";
+  document.getElementById("dato-agricola").textContent = "Cuenta de ahorro " + CUENTA_AGRICOLA;
+  document.getElementById("dato-cuscatlan").textContent = "Cuenta de ahorro " + CUENTA_CUSCATLAN;
+  document.getElementById("link-paypal").href = "https://paypal.me/" + PAYPAL_USUARIO;
 
   function enlaceWhatsApp(mensaje){
     return "https://wa.me/" + WHATSAPP + "?text=" + encodeURIComponent(mensaje);
@@ -2248,21 +2349,169 @@ const ENCARGO = {
 
   queBusco.addEventListener("input", () => { aviso.textContent = ""; });
 
+  /* ---------- Carrito de pedidos: varios encargos antes de mandarlos ---------- */
+
+  const CLAVE_CARRITO = "duransphones_carrito_v1";
+
+  function cargarCarrito(){
+    try{
+      const guardado = JSON.parse(localStorage.getItem(CLAVE_CARRITO));
+      return Array.isArray(guardado) ? guardado : [];
+    }catch(err){
+      return [];
+    }
+  }
+
+  function guardarCarritoEnStorage(){
+    try{
+      localStorage.setItem(CLAVE_CARRITO, JSON.stringify(carritoEncargos));
+    }catch(err){ /* el carrito sigue funcionando en memoria esta sesión aunque no se pueda guardar */ }
+  }
+
+  let carritoEncargos = cargarCarrito();
+
+  const veloCarrito     = document.getElementById("velo-carrito");
+  const panelCarrito    = document.getElementById("panel-carrito");
+  const listaCarrito    = document.getElementById("lista-carrito");
+  const contadorCarrito = document.getElementById("contador-carrito");
+
+  function pintarCarrito(){
+    const cantidad = carritoEncargos.length;
+    contadorCarrito.hidden = cantidad === 0;
+    contadorCarrito.textContent = cantidad;
+
+    listaCarrito.innerHTML = "";
+    if (cantidad === 0){
+      listaCarrito.innerHTML = '<p class="letra-chica">Todavía no guardaste ningún pedido.</p>';
+      return;
+    }
+
+    carritoEncargos.forEach((pedido, indice) => {
+      const fila = document.createElement("div");
+      fila.className = "fila-servidor";
+      fila.innerHTML = `
+        <span>${escapar(pedido.modelo)} · ${escapar(pedido.presupuesto)} · ${escapar(pedido.condicion)}</span>
+        <span class="fila-servidor-botones">
+          <button type="button" class="boton fantasma boton-chico" data-eliminar="${indice}">Eliminar</button>
+        </span>`;
+      listaCarrito.appendChild(fila);
+    });
+  }
+
+  listaCarrito.addEventListener("click", e => {
+    const boton = e.target.closest("button[data-eliminar]");
+    if (!boton) return;
+    carritoEncargos.splice(Number(boton.dataset.eliminar), 1);
+    guardarCarritoEnStorage();
+    pintarCarrito();
+  });
+
+  function abrirCarrito(){
+    pintarCarrito();
+    veloCarrito.classList.add("abierto");
+    panelCarrito.classList.add("abierto");
+    panelCarrito.setAttribute("aria-hidden", "false");
+  }
+
+  function cerrarCarrito(){
+    veloCarrito.classList.remove("abierto");
+    panelCarrito.classList.remove("abierto");
+    panelCarrito.setAttribute("aria-hidden", "true");
+  }
+
+  document.getElementById("cerrar-carrito").addEventListener("click", cerrarCarrito);
+  veloCarrito.addEventListener("click", cerrarCarrito);
+
+  // Hay un pedido "a medio escribir" si el formulario está abierto y
+  // ya se escribió algo en "qué modelo buscas" pero todavía no se
+  // guardó con el botón — es la señal que usamos para avisar antes de
+  // salir sin guardar.
+  function hayPedidoSinGuardar(){
+    return !formularioEncargo.hidden && queBusco.value.trim() !== "";
+  }
+
+  document.getElementById("abrir-carrito").addEventListener("click", () => {
+    if (hayPedidoSinGuardar() &&
+        !confirm("Tenés un pedido a medio escribir sin guardar. ¿Seguro que querés salir sin guardarlo?")){
+      return;
+    }
+    abrirCarrito();
+  });
+
+  // Cerrar/recargar la pestaña con un pedido a medio escribir: el
+  // navegador muestra su propio aviso nativo de "los cambios no se
+  // guardarán" (no se puede personalizar el texto, es una limitación
+  // de los navegadores por seguridad).
+  window.addEventListener("beforeunload", e => {
+    if (hayPedidoSinGuardar()){
+      e.preventDefault();
+      e.returnValue = "";
+    }
+  });
+
+  function limpiarFormularioEncargo(){
+    queBusco.value = "";
+    presupuesto.selectedIndex = 1;
+    urgencia.selectedIndex = 1;
+    condicion = "Como nuevo";
+    [...opcionesCondicion.querySelectorAll(".chip")].forEach((c, i) =>
+      c.setAttribute("aria-pressed", String(i === 0))
+    );
+    aviso.textContent = "";
+  }
+
+  document.getElementById("agregar-otro-pedido").addEventListener("click", () => {
+    cerrarCarrito();
+    limpiarFormularioEncargo();
+    document.getElementById("mostrar-encargo").hidden = true;
+    formularioEncargo.hidden = false;
+    formularioEncargo.classList.add("mostrado");
+    queBusco.focus();
+  });
+
   document.getElementById("enviar-encargo").addEventListener("click", () => {
     const modelo = queBusco.value.trim();
     if (modelo === ""){
-      aviso.textContent = "Escribe qué modelo buscas para poder enviarlo.";
+      aviso.textContent = "Escribe qué modelo buscas para poder guardarlo.";
       queBusco.focus();
       return;
     }
-    const mensaje =
-      "Hola " + TIENDA + ", quiero hacer un encargo.\n\n" +
-      "Modelo: " + modelo + "\n" +
-      "Presupuesto: " + presupuesto.value + "\n" +
-      "Condición: " + condicion + "\n" +
-      "Lo necesito: " + urgencia.value;
-    window.open(enlaceWhatsApp(mensaje), "_blank", "noopener");
+
+    carritoEncargos.push({ modelo, presupuesto: presupuesto.value, condicion, urgencia: urgencia.value });
+    guardarCarritoEnStorage();
+    pintarCarrito();
+
+    // No scrollea a ningún lado al limpiar — el formulario se queda
+    // donde está, listo para el siguiente pedido si el usuario dice que sí.
+    if (confirm("Pedido guardado. ¿Querés agregar otro pedido?")){
+      limpiarFormularioEncargo();
+      queBusco.focus();
+    } else {
+      abrirCarrito();
+    }
   });
+
+  document.getElementById("enviar-carrito").addEventListener("click", () => {
+    if (carritoEncargos.length === 0) return;
+
+    const lineas = carritoEncargos.map((p, i) =>
+      (i + 1) + ". " + p.modelo + " — presupuesto " + p.presupuesto + ", " + p.condicion + ", lo necesita: " + p.urgencia
+    );
+
+    const mensaje =
+      "Hola " + TIENDA + ", quiero hacer estos encargos:\n\n" +
+      lineas.join("\n") +
+      "\n\nYa hice/voy a hacer el anticipo del " + ENCARGO.anticipo + " (adjunto comprobante).";
+
+    window.open(enlaceWhatsApp(mensaje), "_blank", "noopener");
+
+    carritoEncargos = [];
+    guardarCarritoEnStorage();
+    pintarCarrito();
+    cerrarCarrito();
+  });
+
+  pintarCarrito();
 
   /* ================= Panel de administración ================= */
 
