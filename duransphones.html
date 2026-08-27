@@ -271,6 +271,17 @@ const ENCARGO = {
     border-bottom-width: 1px;
   }
 
+  .boton-final{
+    font-size: 1rem;
+    padding: 1.05rem 2.2rem;
+    gap: .65rem;
+    box-shadow: 0 14px 34px -12px rgba(224,178,85,.65);
+  }
+  .boton-final:hover{
+    box-shadow: 0 18px 40px -10px rgba(224,178,85,.78);
+  }
+  .icono-boton{ flex: none; }
+
   /* ================= Cabecera ================= */
 
   .cabecera{
@@ -866,13 +877,13 @@ const ENCARGO = {
 
   .revelar{
     opacity: 0;
-    transform: translateY(36px) scale(.97);
-    transition: opacity .8s var(--curva), transform .8s var(--curva);
+    transform: translateY(46px) scale(.965);
+    transition: opacity 1.4s var(--curva), transform 1.4s var(--curva);
   }
   .revelar.visible{ opacity: 1; transform: none; }
-  .revelar[data-retraso="1"]{ transition-delay: .1s; }
-  .revelar[data-retraso="2"]{ transition-delay: .2s; }
-  .revelar[data-retraso="3"]{ transition-delay: .3s; }
+  .revelar[data-retraso="1"]{ transition-delay: .18s; }
+  .revelar[data-retraso="2"]{ transition-delay: .36s; }
+  .revelar[data-retraso="3"]{ transition-delay: .54s; }
 
   /* ================= Encargos ================= */
 
@@ -1566,7 +1577,10 @@ const ENCARGO = {
       <span id="pie-lugar"></span><br>
       <a id="pie-tel" href="#"></a>
     </p>
-    <a class="boton fantasma" id="wa-pie" href="#" target="_blank" rel="noopener">Ver disponibilidad hoy</a>
+    <a class="boton boton-final" id="wa-pie" href="#" target="_blank" rel="noopener">
+      <svg class="icono-boton" viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M12 2C6.48 2 2 6.48 2 12c0 1.85.5 3.58 1.35 5.05L2 22l5.05-1.35C8.52 21.5 10.24 22 12 22c5.52 0 10-4.48 10-10S17.52 2 12 2zm5.2 14.3c-.22.62-1.28 1.16-1.76 1.2-.46.05-.94.24-3.14-.66-2.66-1.1-4.38-3.82-4.51-4-.13-.18-1.06-1.41-1.06-2.69 0-1.28.67-1.9.9-2.16.23-.26.5-.32.67-.32.17 0 .34 0 .48.01.16.01.36-.06.56.43.21.5.7 1.75.77 1.88.06.13.1.28.02.46-.08.18-.13.29-.25.45-.13.16-.27.35-.38.47-.13.13-.26.27-.11.53.15.26.65 1.07 1.4 1.73.96.85 1.77 1.11 2.03 1.24.26.13.41.11.56-.06.16-.18.65-.76.83-1.02.18-.26.35-.21.6-.13.24.09 1.53.72 1.79.85.26.13.44.19.5.3.06.11.06.62-.15 1.23z"/></svg>
+      Ver disponibilidad hoy
+    </a>
   </div>
 </footer>
 
